@@ -8,7 +8,7 @@ export default function ProblemSection() {
         <h2 className="text-4xl font-bold text-center mb-4">
           One Mistake. Everything Lost.
         </h2>
-        <p className="text-center text-muted mb-16">
+        <p className="text-center text-lg text-gray-400 mb-16">
           Why traditional seed phrase storage is broken
         </p>
       </FadeInView>
@@ -55,7 +55,7 @@ export default function ProblemSection() {
       <FadeInView delay={0.5}>
         <div className="mt-16 text-center">
           <p className="text-4xl font-bold text-primary mb-2">$140B+</p>
-          <p className="text-muted">
+          <p className="text-gray-400">
             Lost in crypto due to lost or stolen seed phrases
           </p>
         </div>

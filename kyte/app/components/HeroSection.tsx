@@ -5,7 +5,6 @@ import FadeInView from "./FadeInView";
 export default function HeroSection() {
   return (
     <section className="relative isolate px-6 pt-36 md:pt-50 lg:px-8">
-      {/* Gradient haut */}
       <div
         aria-hidden="true"
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -19,7 +18,6 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* Gradient bas */}
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"

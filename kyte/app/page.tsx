@@ -3,6 +3,8 @@ import DotBackground from "./components/DotBackground";
 import HeroSection from "./components/HeroSection";
 import ProblemSection from "./components/ProblemSection";
 import SolutionSection from "./components/SolutionSection";
+import Demo from "./components/Demo";
+import SubscriptionPlan from "./components/SubscriptionPlan";
 
 export default function Home() {
   return (
@@ -16,9 +18,12 @@ export default function Home() {
         <ProblemSection />
         <SolutionSection />
         <GridBackground />
+        <Demo />
       </div>
 
-      {/* Demo */}
+      <SubscriptionPlan />
+
+
       {/* Subscribe */}
       {/* Download */}
       {/* FAQ */}
