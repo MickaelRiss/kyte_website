@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/app/components/ui/button";
-import FadeInView from "./FadeInView";
+import FadeInView from "../FadeInView";
 
 export default function HeroSection() {
   return (

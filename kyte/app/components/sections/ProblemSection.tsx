@@ -1,4 +1,4 @@
-import FadeInView from "./FadeInView";
+import FadeInView from "../FadeInView";
 import { Flame, EyeOff, FileX } from "lucide-react";
 
 export default function ProblemSection() {

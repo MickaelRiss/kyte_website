@@ -1,11 +1,17 @@
 import { Button } from "@/app/components/ui/button";
 import Image from "next/image";
+import { Github } from "lucide-react";
+import Link from "next/link";
 
 export default function Navbar({ sections }: { sections: string[] }) {
   return (
     <header className="mx-auto max-w-6xl bg-background/10 backdrop-blur-sm border-b border-border/10 px-6 py-4 fixed top-1 left-0 right-0 z-50 rounded-xl shadow-sm">
       <nav className="flex items-center justify-between">
-        <div className="text-xl font-semibold flex gap-2 justify-center items-end">
+        <Link
+          className="text-xl font-semibold flex gap-2 justify-center items-end"
+          href="/"
+          scroll={true}
+        >
           <Image
             src="/logo.svg"
             alt="Kyte"
@@ -14,21 +20,33 @@ export default function Navbar({ sections }: { sections: string[] }) {
             className="h-8 w-8 pb-1"
           />
           <span>Kyte</span>
-        </div>
+        </Link>
 
         <ul className="hidden sm:flex gap-8">
           {sections.map((section) => (
             <li key={section}>
-              <a className="text-sm" href={`#${section.toLowerCase()}`}>
+              <Link
+                className="text-sm"
+                href={`#${section.toLowerCase()}`}
+                scroll={true}
+              >
                 {section}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
-
-        <Button className="text-foreground bg-primary/90 text-xs">
-          Get Started
-        </Button>
+        <div className="flex items-center gap-6">
+          <Link
+            href="https://github.com/MickaelRiss/kyte"
+            target="_blank"
+            className="hover:text-foreground/80 transition-all ease-in-out"
+          >
+            <Github size={20} />
+          </Link>
+          <Button className="text-foreground bg-primary/90 text-xs">
+            Get Started
+          </Button>
+        </div>
       </nav>
     </header>
   );

@@ -1,10 +1,12 @@
 import GridBackground from "./components/GridBackground";
 import DotBackground from "./components/DotBackground";
-import HeroSection from "./components/HeroSection";
-import ProblemSection from "./components/ProblemSection";
-import SolutionSection from "./components/SolutionSection";
-import Demo from "./components/Demo";
-import SubscriptionPlan from "./components/SubscriptionPlan";
+import HeroSection from "./components/sections/HeroSection";
+import ProblemSection from "./components/sections/ProblemSection";
+import SolutionSection from "./components/sections/SolutionSection";
+import Demo from "./components/sections/DemoSection";
+import SubscriptionPlan from "./components/sections/SubscriptionSection";
+import DownloadSection from "./components/sections/DownloadSection";
+import FaqSection from "./components/sections/FaqSection";
 
 export default function Home() {
   return (
@@ -20,15 +22,13 @@ export default function Home() {
         <GridBackground />
         <Demo />
       </div>
-
       <SubscriptionPlan />
-
-
-      {/* Subscribe */}
-      {/* Download */}
-      {/* FAQ */}
+      <div className="relative">
+        <DownloadSection />
+        <FaqSection />
+        <DotBackground />
+      </div>
       {/* Footer */}
-      
     </div>
   );
 }
