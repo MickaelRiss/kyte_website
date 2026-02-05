@@ -1,0 +1,26 @@
+name: Update from Main Repo
+
+on:
+  repository_dispatch:
+    types: [new_release]
+
+jobs:
+  update-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Website
+        uses: actions/checkout@v4
+
+      - name: Update Version File
+        run: |
+          echo "Dernière version : ${{ github.event.client_payload.version }}" > version.txt
+          # Ajouter les commandes pour modifier le package.json 
+          # Ou télécharger les nouveaux assets du build
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "Mickael Riss"
+          git config --global user.email "mendos.prod@gmail.com"
+          git add .
+          git commit -m "Update to version ${{ github.event.client_payload.version }}"
+          git push
