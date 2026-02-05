@@ -1,4 +1,3 @@
-import { Github } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -18,11 +17,11 @@ export default function Footer() {
         </div>
         <div className="flex items-center text-xs gap-6">
           <Link
-            href="https://github.com/MickaelRiss/kyte"
+            href="https://medium.com/@mickaelriss6/kyte-secure-your-crypto-seed-phrase-555490677ac0"
             target="_blank"
             className="hover:text-foreground/80 transition-all ease-in-out duration-300"
           >
-            GitHub
+            Documentation
           </Link>
           <Link
             href="#download"
