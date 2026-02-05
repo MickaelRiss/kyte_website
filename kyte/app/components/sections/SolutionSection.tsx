@@ -5,7 +5,10 @@ import FadeInView from "../FadeInView";
 
 export default function SolutionSection() {
   return (
-    <section className="relative mt-40 px-6 lg:px-0" id="solution">
+    <section
+      className="relative max-w-5xl mx-auto lg:px-0 pt-20 px-6"
+      id="solution"
+    >
       <div
         aria-hidden="true"
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -50,7 +53,7 @@ export default function SolutionSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-9">
           <div className="md:col-span-2 lg:col-span-1 flex flex-col gap-6 shadow-lg">
             <FadeInView delay={0.2}>
-              <div className="bg-card/80 border border-border px-6 py-6 rounded-md">
+              <div className="bg-card/80 border border-border px-6 py-6 rounded-md shadow-lg hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
                 <WholeWord color="#e4c1f9" size={28} />
                 <h3 className="text-lg font-semibold my-2">
                   1. Enter Your Seed Phrase
@@ -64,7 +67,7 @@ export default function SolutionSection() {
             </FadeInView>
 
             <FadeInView delay={0.2}>
-              <div className="bg-card/80 border border-border px-6 py-6 rounded-md shadow-lg">
+              <div className="bg-card/80 border border-border px-6 py-6 rounded-md shadow-lg hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
                 <FileLock color="#c9a849" size={28} />
                 <h3 className="text-lg font-semibold my-2">
                   2. Military-Grade Encryption
@@ -80,7 +83,7 @@ export default function SolutionSection() {
 
           <div className="md:col-span-2 lg:col-span-2">
             <FadeInView delay={0.4}>
-              <div className="bg-card/80 border border-border px-6 py-8 rounded-md overflow-hidden shadow-lg">
+              <div className="bg-card/80 border border-border px-6 py-8 rounded-md overflow-hidden shadow-lg hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
                 <div className="flex items-center gap-2 mb-2">
                   <Share2 color="#60A5FA" size={28} />
                   <h3 className="text-lg font-semibold">
@@ -100,7 +103,7 @@ export default function SolutionSection() {
           </div>
         </div>
         <FadeInView delay={0.1}>
-          <div className="bg-card/80 border border-border px-6 py-6 rounded-md mt-6 flex flex-col gap-8 justify-between items-center md:flex-row md:gap-18 shadow-lg">
+          <div className="bg-card/80 border border-border px-6 py-6 rounded-md mt-6 flex flex-col gap-8 justify-between items-center md:flex-row md:gap-18 shadow-lg hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
             <div className="">
               <ShieldCheck color="#4ADE80" size={28} />
               <h3 className="text-lg font-semibold my-2">

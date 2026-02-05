@@ -1,4 +1,4 @@
-import { Button } from "@/app/components/ui/button";
+import ActionButton from "./ActionButton";
 import Image from "next/image";
 import { Github } from "lucide-react";
 import Link from "next/link";
@@ -26,7 +26,7 @@ export default function Navbar({ sections }: { sections: string[] }) {
           {sections.map((section) => (
             <li key={section}>
               <Link
-                className="text-sm"
+                className="text-sm transition-all ease-in-out hover:text-primary duration-300"
                 href={`#${section.toLowerCase()}`}
                 scroll={true}
               >
@@ -43,9 +43,7 @@ export default function Navbar({ sections }: { sections: string[] }) {
           >
             <Github size={20} />
           </Link>
-          <Button className="text-foreground bg-primary/90 text-xs">
-            Get Started
-          </Button>
+          <ActionButton textSize="text-xs" />
         </div>
       </nav>
     </header>

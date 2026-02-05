@@ -5,21 +5,24 @@ const downloadOn = [
   {
     logo: "/ios.svg",
     name: "IOS",
+    released: true,
   },
   {
     logo: "/microsoft.svg",
     name: "Microsoft",
+    released: false,
   },
   {
     logo: "/linux.svg",
     name: "Linux",
+    released: false,
   },
 ];
 
 export default function DownloadSection() {
   return (
     <section
-      className="mt-30 md:mt-40 max-w-5xl mx-auto px-6 lg:px-0"
+      className="mt-30 md:mt-40 max-w-5xl mx-auto lg:px-0 pt-20 px-6"
       id="download"
     >
       <div

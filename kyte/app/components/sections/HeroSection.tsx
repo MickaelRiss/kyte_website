@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { Button } from "@/app/components/ui/button";
 import FadeInView from "../FadeInView";
+import WaitlistModal from "../WaitlistModal";
+import ActionButton from "../ActionButton";
 
 export default function HeroSection() {
   return (
-    <section className="relative isolate px-6 pt-36 md:pt-50 lg:px-8">
+    <section className="relative isolate md:pt-50 lg:px-0 pt-24 px-6">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -56,14 +57,10 @@ export default function HeroSection() {
           </FadeInView>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <FadeInView delay={0.4}>
-              <Button className="text-foreground" variant="outline">
-                Join Waitlist
-              </Button>
+              <WaitlistModal />
             </FadeInView>
             <FadeInView delay={0.5}>
-              <Button className="text-foreground bg-primary/90">
-                Get Started
-              </Button>
+              <ActionButton />
             </FadeInView>
           </div>
         </div>

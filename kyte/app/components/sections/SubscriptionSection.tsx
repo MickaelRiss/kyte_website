@@ -5,7 +5,7 @@ const subscriptions = [
   {
     name: "Community",
     id: "tier-community",
-    href: "#",
+    href: "#download",
     price: "Free",
     description: "Perfect for individuals securing personal portfolios.",
     features: [
@@ -35,7 +35,7 @@ const subscriptions = [
 
 export default function SubscriptionPlan() {
   return (
-    <div className="relative mt-40 px-6 lg:px-0 isolate" id="plans">
+    <section className="relative mt-20 isolate lg:px-0 py-1 px-6" id="plans">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -85,6 +85,6 @@ export default function SubscriptionPlan() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

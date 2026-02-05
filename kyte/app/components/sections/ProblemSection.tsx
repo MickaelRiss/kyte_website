@@ -3,7 +3,7 @@ import { Flame, EyeOff, FileX } from "lucide-react";
 
 export default function ProblemSection() {
   return (
-    <section className="mt-30 md:mt-40 max-w-5xl mx-auto px-6 lg:px-0">
+    <section className="md:mt-30 max-w-5xl mx-auto lg:px-0 pt-30 px-6">
       <FadeInView delay={0.1}>
         <h2 className="text-4xl font-bold text-center mb-4">
           One Mistake. Everything Lost.
@@ -15,7 +15,7 @@ export default function ProblemSection() {
 
       <div className="grid md:grid-cols-3 gap-8">
         <FadeInView delay={0.2}>
-          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6">
+          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
             <Flame color="red" size={24} className="mb-4" />
             <h3 className="text-lg font-semibold mb-2">
               Single Point of Failure
@@ -27,7 +27,7 @@ export default function ProblemSection() {
           </div>
         </FadeInView>
         <FadeInView delay={0.4}>
-          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6">
+          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
             <EyeOff color="red" size={24} className="mb-4" />
             <h3 className="text-lg font-semibold mb-2">
               Zero Privacy Protection
@@ -39,7 +39,7 @@ export default function ProblemSection() {
           </div>
         </FadeInView>
         <FadeInView delay={0.6}>
-          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6">
+          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
             <FileX color="red" size={24} className="mb-4" />
             <h3 className="text-lg font-semibold mb-2">
               Unrecoverable for Heirs

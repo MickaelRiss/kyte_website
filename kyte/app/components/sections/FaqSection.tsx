@@ -124,7 +124,7 @@ const faqContent = [
 export default function FaqSection() {
   return (
     <section
-      className="mt-30 md:mt-40 mb-30 max-w-5xl mx-auto px-6 lg:px-0"
+      className="mt-28 mb-30 max-w-5xl mx-auto lg:px-0 pt-24 px-6"
       id="support"
     >
       <FadeInView delay={0.1}>
@@ -143,7 +143,7 @@ export default function FaqSection() {
           >
             {faqContent.map((question) => (
               <AccordionItem key={question.id} value={question.question}>
-                <AccordionTrigger className="text-md">
+                <AccordionTrigger className="text-md cursor-pointer">
                   {question.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-foreground/80">
