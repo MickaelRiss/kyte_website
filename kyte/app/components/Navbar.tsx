@@ -1,6 +1,5 @@
 import ActionButton from "./ActionButton";
 import Image from "next/image";
-import { Github } from "lucide-react";
 import Link from "next/link";
 
 export default function Navbar({ sections }: { sections: string[] }) {
@@ -35,16 +34,7 @@ export default function Navbar({ sections }: { sections: string[] }) {
             </li>
           ))}
         </ul>
-        <div className="flex items-center gap-6">
-          <Link
-            href="https://github.com/MickaelRiss/kyte"
-            target="_blank"
-            className="hover:text-foreground/80 transition-all ease-in-out"
-          >
-            <Github size={20} />
-          </Link>
-          <ActionButton textSize="text-xs" />
-        </div>
+        <ActionButton textSize="text-xs" />
       </nav>
     </header>
   );

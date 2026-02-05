@@ -6,16 +6,19 @@ const downloadOn = [
     logo: "/ios.svg",
     name: "IOS",
     released: true,
+    extension: ".dmg",
   },
   {
     logo: "/microsoft.svg",
     name: "Microsoft",
     released: false,
+    extension: ".exe",
   },
   {
     logo: "/linux.svg",
     name: "Linux",
     released: false,
+    extension: "tar.gz",
   },
 ];
 
