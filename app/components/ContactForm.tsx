@@ -69,7 +69,7 @@ export default function ContactForm() {
         </p>
       </div>
 
-      <Form onSubmit={handleSubmit} className="space-y-6">
+      <Form onSubmit={handleSubmit} className="space-y-6" action="#">
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <label
