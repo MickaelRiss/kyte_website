@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import LocomotiveScroll from "locomotive-scroll";
-import "locomotive-scroll/dist/locomotive-scroll.css";
 
 export default function SmoothScroll({
   children,
@@ -15,10 +14,10 @@ export default function SmoothScroll({
     if (!scrollRef.current) return;
 
     const scroll = new LocomotiveScroll({
-      el: scrollRef.current,
-      smooth: true,
-      multiplier: 1,
-      class: "is-reveal",
+      lenisOptions: {
+        duration: 1.2,
+        smoothWheel: true,
+      },
     });
 
     return () => {
@@ -26,9 +25,5 @@ export default function SmoothScroll({
     };
   }, []);
 
-  return (
-    <div data-scroll-container ref={scrollRef}>
-      {children}
-    </div>
-  );
+  return <div ref={scrollRef}>{children}</div>;
 }
