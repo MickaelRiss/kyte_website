@@ -28,7 +28,6 @@ export default function Home() {
         <FaqSection />
         <DotBackground />
       </div>
-      {/* Footer */}
     </div>
   );
 }
