@@ -1,16 +1,17 @@
 import { Button } from "./ui/button";
-import { Download, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import Image from "next/image";
 
 interface OS {
   logo: string;
   name: string;
   released: boolean;
+  url?: string;
 }
 
 export default function DownloadButton({ os }: { os: OS }) {
   if (os.released) {
-    return (
+    const button = (
       <Button
         aria-label={`Download on ${os.name}`}
         variant="outline"
@@ -36,9 +37,14 @@ export default function DownloadButton({ os }: { os: OS }) {
         </div>
       </Button>
     );
+
+    if (os.url) {
+      return <a href={os.url}>{button}</a>;
+    }
+
+    return button;
   }
 
-  // COMING SOON
   return (
     <div className="relative group bg-card/40 border border-border/50 rounded-xl p-6 h-auto w-full sm:w-64 opacity-60 cursor-not-allowed">
       <div className="absolute -top-3 -right-3 bg-primary/20 text-primary border border-primary/40 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-md">

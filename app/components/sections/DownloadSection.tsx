@@ -1,5 +1,6 @@
 import FadeInView from "../FadeInView";
 import DownloadButton from "../DownloadButton";
+import release from "@/data/release.json";
 
 const downloadOn = [
   {
@@ -7,6 +8,7 @@ const downloadOn = [
     name: "IOS",
     released: true,
     extension: ".dmg",
+    url: release.assets.macos,
   },
   {
     logo: "/microsoft.svg",
@@ -69,7 +71,7 @@ export default function DownloadSection() {
       </div>
       <FadeInView delay={0.2}>
         <p className="text-muted text-sm text-center mt-12">
-          Current Version: 1.0.1 (LTS) - Released in Jan 2026
+          Current Version: {release.version}
         </p>
       </FadeInView>
     </section>
