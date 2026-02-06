@@ -17,16 +17,15 @@ jobs:
 
           VERSION=$(echo "$RELEASE" | jq -r '.tag_name | ltrimstr("v")')
           MACOS_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".dmg")) | .browser_download_url')
-
-          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-            echo "Failed to fetch release version"
-            exit 1
-          fi
+          WINDOWS_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".exe")) | .browser_download_url')
+          LINUX_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".AppImage")) | .browser_download_url')
 
           jq -n \
             --arg version "$VERSION" \
             --arg macos "$MACOS_URL" \
-            '{version: $version, assets: {macos: $macos}}' > data/release.json
+            --arg windows "$WINDOWS_URL" \
+            --arg linux "$LINUX_URL" \
+            '{version: $version, assets: {macos: $macos, windows: $windows, linux: $linux}}' > data/release.json
 
           echo "Updated release.json to version $VERSION"
           cat data/release.json
