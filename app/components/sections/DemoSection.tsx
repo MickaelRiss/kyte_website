@@ -31,10 +31,7 @@ export default function Demo() {
               variant="outline"
               className="cursor-pointer transition-all ease-in-out duration-300 hover:border-foreground/70 hover:text-foreground/70"
             >
-              <Link
-                href="https://medium.com/@mickaelriss6/kyte-secure-your-crypto-seed-phrase-555490677ac0"
-                target="_blank"
-              >
+              <Link href="https://kyte.gitbook.io/kyte-docs/" target="_blank">
                 Read Docs
               </Link>
             </Button>

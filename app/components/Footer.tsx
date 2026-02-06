@@ -17,7 +17,7 @@ export default function Footer() {
         </div>
         <div className="flex items-center text-xs gap-6">
           <Link
-            href="https://medium.com/@mickaelriss6/kyte-secure-your-crypto-seed-phrase-555490677ac0"
+            href="https://kyte.gitbook.io/kyte-docs/"
             target="_blank"
             className="hover:text-foreground/80 transition-all ease-in-out duration-300"
           >
