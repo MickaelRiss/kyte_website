@@ -81,7 +81,7 @@ function invoiceEvent(billingReason: string, override: Record<string, unknown> =
       object: {
         customer: "cus_abc",
         customer_email: "user@example.com",
-        subscription: "sub_abc",
+        parent: { subscription_details: { subscription: "sub_abc" } },
         billing_reason: billingReason,
         ...override,
       },

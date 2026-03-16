@@ -30,9 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${monaSans.className} ${hubotSans.className}`}>
-      <body className="antialiased">
+      <body className="antialiased flex flex-col min-h-screen">
         <Navbar sections={sections} />
-        <SmoothScroll>{children}</SmoothScroll>
+        <SmoothScroll className="flex-1">{children}</SmoothScroll>
         <Footer />
         <Script
           id="umami-script"

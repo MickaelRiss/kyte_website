@@ -5,7 +5,7 @@ import ActionButton from "../ActionButton";
 
 export default function Demo() {
   return (
-    <section className="relative z-10 mt-32 max-w-5xl mx-auto lg:px-0 pt-24 px-6">
+    <section className="relative z-10 mt-32 max-w-5xl mx-auto lg:px-0 pt-14 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <FadeInView delay={0.1}>
           <h2 className="text-4xl font-bold mb-4">See It In Action</h2>

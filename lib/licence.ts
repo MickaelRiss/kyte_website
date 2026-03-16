@@ -1,4 +1,5 @@
 import { createSign } from "crypto";
+import type Stripe from "stripe";
 
 // Parsed once at module load — avoids re-processing on every key generation.
 const PRIVATE_KEY = process.env.ED25519_PRIVATE_KEY!.replace(/\\n/g, "\n");
@@ -16,6 +17,12 @@ export function base64urlDecode(str: string): Buffer {
   const base64 = str.replace(/-/g, "+").replace(/_/g, "/");
   const padded = base64 + "==".slice(0, (4 - (base64.length % 4)) % 4);
   return Buffer.from(padded, "base64");
+}
+
+export function getSubscriptionPeriodEnd(
+  subscription: Stripe.Subscription | null | undefined,
+): number {
+  return subscription?.items?.data[0]?.current_period_end ?? 0;
 }
 
 export function generateLicenceKey(customerId: string, periodEnd: number): string {

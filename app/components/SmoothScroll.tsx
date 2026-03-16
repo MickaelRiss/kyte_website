@@ -5,8 +5,10 @@ import LocomotiveScroll from "locomotive-scroll";
 
 export default function SmoothScroll({
   children,
+  className,
 }: {
   children: React.ReactNode;
+  className?: string;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -25,5 +27,5 @@ export default function SmoothScroll({
     };
   }, []);
 
-  return <div ref={scrollRef}>{children}</div>;
+  return <div ref={scrollRef} className={className}>{children}</div>;
 }

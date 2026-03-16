@@ -3,7 +3,7 @@ import { Flame, EyeOff, FileX } from "lucide-react";
 
 export default function ProblemSection() {
   return (
-    <section className="md:mt-30 max-w-5xl mx-auto lg:px-0 pt-30 px-6">
+    <section className="md:mt-30 max-w-5xl mx-auto lg:px-0 pt-30 md:pt-20 px-6">
       <FadeInView delay={0.1}>
         <h2 className="text-4xl font-bold text-center mb-4">
           One Mistake. Everything Lost.

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createVerify } from "crypto";
-import { base64urlDecode, base64urlEncode, generateLicenceKey } from "@/lib/licence";
+import { base64urlDecode, base64urlEncode, generateLicenceKey, getSubscriptionPeriodEnd } from "@/lib/licence";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -71,10 +71,11 @@ export async function POST(request: NextRequest) {
       });
 
       const sub = allSubs.data[0];
-      if (sub && sub.current_period_end > now) {
+      const subPeriodEnd = getSubscriptionPeriodEnd(sub);
+      if (sub && subPeriodEnd > now) {
         // Still in paid period even though cancelled
         return NextResponse.json({
-          licence_key: generateLicenceKey(customerId, sub.current_period_end),
+          licence_key: generateLicenceKey(customerId, subPeriodEnd),
         });
       }
 
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     // Step 3: Generate a fresh key with the current period end
     return NextResponse.json({
-      licence_key: generateLicenceKey(customerId, activeSub.current_period_end),
+      licence_key: generateLicenceKey(customerId, getSubscriptionPeriodEnd(activeSub)),
     });
   } catch (err) {
     console.error("Verify licence error:", err);
