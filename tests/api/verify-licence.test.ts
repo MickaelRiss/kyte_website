@@ -12,13 +12,13 @@ const mocks = vi.hoisted(() => ({
   subscriptionsList: vi.fn(),
 }));
 
-// Mock only createVerify and createSign — everything else from crypto is real.
+// Mock only verify and sign — everything else from crypto is real.
 vi.mock("crypto", async () => {
   const actual = await vi.importActual<typeof import("crypto")>("crypto");
   return {
     ...actual,
-    createVerify: () => ({ update: vi.fn(), verify: mocks.cryptoVerify }),
-    createSign: () => ({ update: vi.fn(), sign: mocks.cryptoSign }),
+    verify: (...args: unknown[]) => mocks.cryptoVerify(...args),
+    sign: (...args: unknown[]) => mocks.cryptoSign(...args),
   };
 });
 
