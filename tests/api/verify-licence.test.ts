@@ -72,7 +72,7 @@ function makeRequest(licenceKey: unknown): Request {
 }
 
 // A future-dated active subscription returned by Stripe.
-const ACTIVE_SUB = { current_period_end: NOW + 30 * 24 * 3600 };
+const ACTIVE_SUB = { items: { data: [{ current_period_end: NOW + 30 * 24 * 3600 }] } };
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -156,7 +156,7 @@ describe("POST /api/verify-licence", () => {
       .mockResolvedValueOnce({ data: [] })
       // Second call: no status filter → returns the cancelled-but-in-period sub
       .mockResolvedValueOnce({
-        data: [{ current_period_end: NOW + 5 * 24 * 3600 }],
+        data: [{ items: { data: [{ current_period_end: NOW + 5 * 24 * 3600 }] } }],
       });
     const res = await POST(makeRequest(key) as any);
     expect(res.status).toBe(200);
@@ -169,7 +169,7 @@ describe("POST /api/verify-licence", () => {
     mocks.subscriptionsList
       .mockResolvedValueOnce({ data: [] }) // no active sub
       .mockResolvedValueOnce({
-        data: [{ current_period_end: NOW - 5 * 24 * 3600 }], // past period end
+        data: [{ items: { data: [{ current_period_end: NOW - 5 * 24 * 3600 }] } }], // past period end
       });
     const res = await POST(makeRequest(key) as any);
     expect(res.status).toBe(403);

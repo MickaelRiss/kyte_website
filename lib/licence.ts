@@ -22,7 +22,7 @@ export function base64urlDecode(str: string): Buffer {
 export function getSubscriptionPeriodEnd(
   subscription: Stripe.Subscription | null | undefined,
 ): number {
-  return subscription?.current_period_end ?? 0;
+  return subscription?.items?.data[0]?.current_period_end ?? 0;
 }
 
 export function generateLicenceKey(customerId: string, periodEnd: number): string {

@@ -44,7 +44,7 @@ import { POST } from "../../app/api/stripe-webhook/route";
 // Test helpers
 // ---------------------------------------------------------------------------
 const NOW = Math.floor(Date.now() / 1000);
-const ACTIVE_SUBSCRIPTION = { current_period_end: NOW + 30 * 24 * 3600 };
+const ACTIVE_SUBSCRIPTION = { items: { data: [{ current_period_end: NOW + 30 * 24 * 3600 }] } };
 
 function makeRequest(body: string, stripeSignature?: string): Request {
   const headers: Record<string, string> = { "content-type": "application/json" };
