@@ -16,7 +16,7 @@ export default function Navbar({ sections }: { sections: string[] }) {
             alt="Kyte"
             width="32"
             height="32"
-            className="h-8 w-8 pb-1"
+            className="h-8 w-8"
           />
           <span>Kyte</span>
         </Link>

@@ -49,7 +49,7 @@ export default function PricingCard({
         {subscription.price === "Free" ? (
           ""
         ) : (
-          <span className="text-muted text-base">/lifetime</span>
+          <span className="text-muted text-base">/mo</span>
         )}
       </p>
       <p className="text-gray-300 mt-6 text-base/7">
@@ -79,9 +79,13 @@ export default function PricingCard({
           Get started today
         </a>
       ) : (
-        <div className="mt-8 sm:mt-10 block rounded-md px-3.5 py-2.5 text-center text-sm bg-primary/20 text-primary/60 cursor-not-allowed transition-all ease-in-out duration-200">
-          Coming Soon
-        </div>
+        <a
+          href={subscription.href}
+          aria-describedby={subscription.id}
+          className="bg-primary text-primary-foreground hover:bg-primary/90 mt-8 sm:mt-10 block rounded-md px-3.5 py-2.5 text-center text-sm font-semibold transition-all ease-in-out duration-200"
+        >
+          Get Guardian
+        </a>
       )}
     </div>
   );
