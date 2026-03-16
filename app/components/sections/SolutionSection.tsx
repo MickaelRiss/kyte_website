@@ -6,7 +6,7 @@ import FadeInView from "../FadeInView";
 export default function SolutionSection() {
   return (
     <section
-      className="relative max-w-5xl mx-auto lg:px-0 pt-20 px-6"
+      className="relative max-w-5xl mx-auto lg:px-0 pt-10 px-6"
       id="solution"
     >
       <div

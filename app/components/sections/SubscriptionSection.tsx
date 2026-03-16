@@ -35,7 +35,7 @@ const subscriptions = [
 
 export default function SubscriptionPlan() {
   return (
-    <section className="relative mt-20 isolate lg:px-0 py-1 px-6" id="plans">
+    <section className="relative mt-10 isolate lg:px-0 py-1 px-6" id="plans">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"

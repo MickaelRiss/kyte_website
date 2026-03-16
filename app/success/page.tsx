@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Stripe from "stripe";
-import { generateLicenceKey } from "@/lib/licence";
+import { generateLicenceKey, getSubscriptionPeriodEnd } from "@/lib/licence";
 import LicenceDisplay from "./LicenceDisplay";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -19,7 +19,7 @@ async function getLicenceKey(sessionId: string): Promise<string | null> {
     if (!customerId) return null;
 
     const subscription = session.subscription as Stripe.Subscription | null;
-    const periodEnd = subscription?.current_period_end ?? null;
+    const periodEnd = getSubscriptionPeriodEnd(subscription) || null;
 
     if (!periodEnd) return null;
 
@@ -40,7 +40,7 @@ export default async function SuccessPage({
 
   if (!licenceKey) {
     return (
-      <main className="min-h-[70vh] flex items-center justify-center px-6">
+      <main className="flex-1 flex items-center justify-center px-6 min-h-below-navbar">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-5xl mb-6">✉️</p>
           <h1 className="text-3xl font-bold text-white mb-4">
@@ -62,7 +62,7 @@ export default async function SuccessPage({
   }
 
   return (
-    <main className="min-h-[70vh] flex items-center justify-center px-6">
+    <main className="flex-1 flex items-center justify-center px-6 min-h-below-navbar">
       <div className="max-w-2xl mx-auto text-center w-full">
         <p className="text-5xl mb-6 text-primary">✓</p>
         <h1 className="text-3xl font-bold text-white mb-4">

@@ -9,6 +9,9 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .min-h-below-navbar {
+    min-height: calc(100vh - 5rem);
+  }
 }
 
 @theme {

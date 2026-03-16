@@ -27,7 +27,7 @@ const downloadOn = [
 export default function DownloadSection() {
   return (
     <section
-      className="mt-30 md:mt-40 max-w-5xl mx-auto lg:px-0 pt-20 px-6"
+      className="mt-30 md:mt-40 max-w-5xl mx-auto lg:px-0 pt-10 px-6"
       id="download"
     >
       <div

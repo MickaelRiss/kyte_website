@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Resend } from "resend";
-import { generateLicenceKey } from "@/lib/licence";
+import { generateLicenceKey, getSubscriptionPeriodEnd } from "@/lib/licence";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const resend = new Resend(process.env.RESEND_API_KEY!);
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string,
       );
-      periodEnd = subscription.current_period_end;
+      periodEnd = getSubscriptionPeriodEnd(subscription);
     } else {
       // invoice.paid (monthly renewal)
       const invoice = event.data.object as Stripe.Invoice;
@@ -62,10 +62,10 @@ export async function POST(request: NextRequest) {
       customerId = invoice.customer as string;
       customerEmail = invoice.customer_email;
 
-      const subscription = await stripe.subscriptions.retrieve(
-        invoice.subscription as string,
-      );
-      periodEnd = subscription.current_period_end;
+      const subscriptionId =
+        invoice.parent?.subscription_details?.subscription as string;
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      periodEnd = getSubscriptionPeriodEnd(subscription);
     }
 
     // Step 4: Generate the signed licence key
