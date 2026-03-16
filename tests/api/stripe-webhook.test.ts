@@ -28,12 +28,12 @@ vi.mock("resend", () => ({
   }),
 }));
 
-// Mock only createSign — the route doesn't use any other crypto primitive.
+// Mock only sign — the route doesn't use any other crypto primitive.
 vi.mock("crypto", async () => {
   const actual = await vi.importActual<typeof import("crypto")>("crypto");
   return {
     ...actual,
-    createSign: () => ({ update: vi.fn(), sign: mocks.cryptoSign }),
+    sign: (...args: unknown[]) => mocks.cryptoSign(...args),
   };
 });
 

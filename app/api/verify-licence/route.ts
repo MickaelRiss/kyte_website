@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createVerify } from "crypto";
+import { verify } from "crypto";
 import { base64urlDecode, base64urlEncode, generateLicenceKey, getSubscriptionPeriodEnd } from "@/lib/licence";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -29,9 +29,7 @@ export async function POST(request: NextRequest) {
 
     // Verify the signature first (make sure this key was issued by us)
     const [headerB64, payloadB64, signatureB64] = parts;
-    const verifier = createVerify("Ed25519");
-    verifier.update(`${headerB64}.${payloadB64}`);
-    if (!verifier.verify(PUBLIC_KEY, base64urlDecode(signatureB64))) {
+    if (!verify(null, Buffer.from(`${headerB64}.${payloadB64}`), PUBLIC_KEY, base64urlDecode(signatureB64))) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
     }
 

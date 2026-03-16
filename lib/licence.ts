@@ -1,4 +1,4 @@
-import { createSign } from "crypto";
+import { sign } from "crypto";
 import type Stripe from "stripe";
 
 // Parsed once at module load — avoids re-processing on every key generation.
@@ -37,8 +37,6 @@ export function generateLicenceKey(customerId: string, periodEnd: number): strin
     }),
   );
   const signedContent = `${header}.${payload}`;
-  const signer = createSign("Ed25519");
-  signer.update(signedContent);
-  const signature = signer.sign(PRIVATE_KEY);
+  const signature = sign(null, Buffer.from(signedContent), PRIVATE_KEY);
   return `${signedContent}.${base64urlEncode(signature)}`;
 }
