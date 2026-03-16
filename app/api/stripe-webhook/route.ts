@@ -47,18 +47,34 @@ export async function POST(request: NextRequest) {
       customerEmail = session.customer_details?.email ?? null;
       checkoutSessionId = session.id;
 
-      // Get the subscription to find the period end
+      // In Stripe API 2025-03-31.basil, subscription may not exist yet
+      // when checkout.session.completed fires. Let invoice.paid handle it.
+      if (!session.subscription) {
+        return NextResponse.json({ received: true });
+      }
       const subscription = await stripe.subscriptions.retrieve(
         session.subscription as string,
       );
       periodEnd = getSubscriptionPeriodEnd(subscription);
     } else {
-      // invoice.paid (monthly renewal)
+      // invoice.paid — handles renewals AND first payment when
+      // checkout.session.completed had no subscription yet.
       const invoice = event.data.object as Stripe.Invoice;
-      // Skip the first payment — checkout.session.completed already handled it
+
+      // If checkout.session.completed already sent the email for this first
+      // invoice, skip to avoid a duplicate email.
       if (invoice.billing_reason === "subscription_create") {
-        return NextResponse.json({ received: true });
+        const subId =
+          invoice.parent?.subscription_details?.subscription as string;
+        const sessions = await stripe.checkout.sessions.list({
+          subscription: subId,
+          limit: 1,
+        });
+        if (sessions.data[0]?.metadata?.licence_key) {
+          return NextResponse.json({ received: true });
+        }
       }
+
       customerId = invoice.customer as string;
       customerEmail = invoice.customer_email;
 

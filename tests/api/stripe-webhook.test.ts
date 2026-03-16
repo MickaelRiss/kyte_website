@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   constructEvent: vi.fn(),
   subscriptionsRetrieve: vi.fn(),
   sessionsUpdate: vi.fn(),
+  sessionsList: vi.fn(),
   emailsSend: vi.fn(),
   cryptoSign: vi.fn(),
 }));
@@ -16,7 +17,7 @@ vi.mock("stripe", () => ({
     return {
       webhooks: { constructEvent: mocks.constructEvent },
       subscriptions: { retrieve: mocks.subscriptionsRetrieve },
-      checkout: { sessions: { update: mocks.sessionsUpdate } },
+      checkout: { sessions: { update: mocks.sessionsUpdate, list: mocks.sessionsList } },
     };
   }),
 }));
@@ -43,7 +44,7 @@ import { POST } from "../../app/api/stripe-webhook/route";
 // Test helpers
 // ---------------------------------------------------------------------------
 const NOW = Math.floor(Date.now() / 1000);
-const ACTIVE_SUBSCRIPTION = { current_period_end: NOW + 30 * 24 * 3600 };
+const ACTIVE_SUBSCRIPTION = { items: { data: [{ current_period_end: NOW + 30 * 24 * 3600 }] } };
 
 function makeRequest(body: string, stripeSignature?: string): Request {
   const headers: Record<string, string> = { "content-type": "application/json" };
@@ -97,6 +98,7 @@ describe("POST /api/stripe-webhook", () => {
     vi.clearAllMocks();
     // Restore sensible defaults after clearing.
     mocks.sessionsUpdate.mockResolvedValue({});
+    mocks.sessionsList.mockResolvedValue({ data: [] });
     mocks.emailsSend.mockResolvedValue({ id: "email_ok" });
     mocks.cryptoSign.mockReturnValue(Buffer.from("fakesig"));
     mocks.subscriptionsRetrieve.mockResolvedValue(ACTIVE_SUBSCRIPTION);
@@ -189,14 +191,29 @@ describe("POST /api/stripe-webhook", () => {
   // --- invoice.paid ---
 
   describe("invoice.paid", () => {
-    it("returns 200 early without sending email for billing_reason=subscription_create", async () => {
-      // Fix #1: deduplication — checkout.session.completed already handled this
+    it("generates a licence key and sends email for billing_reason=subscription_create when checkout did not handle it", async () => {
+      // When checkout.session.completed had no subscription (basil API),
+      // invoice.paid handles the first-payment email.
+      mocks.sessionsList.mockResolvedValue({ data: [] });
       mocks.constructEvent.mockReturnValue(
         invoiceEvent("subscription_create"),
       );
       const res = await POST(makeRequest("{}", "sig") as any);
       expect(res.status).toBe(200);
-      expect(await res.json()).toEqual({ received: true });
+      expect(mocks.subscriptionsRetrieve).toHaveBeenCalledWith("sub_abc");
+      expect(mocks.emailsSend).toHaveBeenCalledOnce();
+    });
+
+    it("skips email for billing_reason=subscription_create when checkout already handled it", async () => {
+      // Dedup: checkout.session.completed already stored a licence_key in metadata.
+      mocks.sessionsList.mockResolvedValue({
+        data: [{ metadata: { licence_key: "header.payload.sig" } }],
+      });
+      mocks.constructEvent.mockReturnValue(
+        invoiceEvent("subscription_create"),
+      );
+      const res = await POST(makeRequest("{}", "sig") as any);
+      expect(res.status).toBe(200);
       expect(mocks.subscriptionsRetrieve).not.toHaveBeenCalled();
       expect(mocks.emailsSend).not.toHaveBeenCalled();
     });
