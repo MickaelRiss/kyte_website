@@ -10,15 +10,19 @@ const mocks = vi.hoisted(() => ({
   cryptoSign: vi.fn(),
   // Stripe subscriptions.list mock.
   subscriptionsList: vi.fn(),
+  createPrivateKey: vi.fn().mockReturnValue("fake-private-key"),
+  createPublicKey: vi.fn().mockReturnValue("fake-public-key"),
 }));
 
-// Mock only verify and sign — everything else from crypto is real.
+// Mock only verify, sign, and key creation — everything else from crypto is real.
 vi.mock("crypto", async () => {
   const actual = await vi.importActual<typeof import("crypto")>("crypto");
   return {
     ...actual,
     verify: (...args: unknown[]) => mocks.cryptoVerify(...args),
     sign: (...args: unknown[]) => mocks.cryptoSign(...args),
+    createPrivateKey: (...args: unknown[]) => mocks.createPrivateKey(...args),
+    createPublicKey: (...args: unknown[]) => mocks.createPublicKey(...args),
   };
 });
 

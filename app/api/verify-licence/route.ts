@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { verify } from "crypto";
+import { verify, createPublicKey } from "crypto";
 import { base64urlDecode, base64urlEncode, generateLicenceKey, getSubscriptionPeriodEnd } from "@/lib/licence";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-const PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+const PUBLIC_KEY = createPublicKey(`-----BEGIN PUBLIC KEY-----
 MCowBQYDK2VwAyEAysSG93pDLjmsnY88yDT/71WqBHA8jr2vqdiYh2T/YlA=
------END PUBLIC KEY-----`;
+-----END PUBLIC KEY-----`);
 
 export async function POST(request: NextRequest) {
   try {
