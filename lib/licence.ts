@@ -1,8 +1,16 @@
-import { sign } from "crypto";
+import { sign, createPrivateKey } from "crypto";
 import type Stripe from "stripe";
 
-// Parsed once at module load — avoids re-processing on every key generation.
-const PRIVATE_KEY = process.env.ED25519_PRIVATE_KEY!.replace(/\\n/g, "\n");
+// Lazily parsed on first use — avoids crashing at import time in test environments.
+let _privateKey: ReturnType<typeof createPrivateKey> | null = null;
+function getPrivateKey() {
+  if (!_privateKey) {
+    _privateKey = createPrivateKey(
+      process.env.ED25519_PRIVATE_KEY!.replace(/\\n/g, "\n").replace(/^ +| +$/gm, ""),
+    );
+  }
+  return _privateKey;
+}
 
 export function base64urlEncode(data: string | Buffer): string {
   const buf = typeof data === "string" ? Buffer.from(data) : data;
@@ -37,6 +45,6 @@ export function generateLicenceKey(customerId: string, periodEnd: number): strin
     }),
   );
   const signedContent = `${header}.${payload}`;
-  const signature = sign(null, Buffer.from(signedContent), PRIVATE_KEY);
+  const signature = sign(null, Buffer.from(signedContent), getPrivateKey());
   return `${signedContent}.${base64urlEncode(signature)}`;
 }

@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
   sessionsList: vi.fn(),
   emailsSend: vi.fn(),
   cryptoSign: vi.fn(),
+  createPrivateKey: vi.fn().mockReturnValue("fake-private-key"),
 }));
 
 vi.mock("stripe", () => ({
@@ -28,12 +29,13 @@ vi.mock("resend", () => ({
   }),
 }));
 
-// Mock only sign — the route doesn't use any other crypto primitive.
+// Mock only sign and createPrivateKey — the route doesn't use any other crypto primitive.
 vi.mock("crypto", async () => {
   const actual = await vi.importActual<typeof import("crypto")>("crypto");
   return {
     ...actual,
     sign: (...args: unknown[]) => mocks.cryptoSign(...args),
+    createPrivateKey: (...args: unknown[]) => mocks.createPrivateKey(...args),
   };
 });
 
