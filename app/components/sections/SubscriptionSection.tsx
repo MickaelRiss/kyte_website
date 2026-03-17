@@ -19,7 +19,7 @@ const subscriptions = [
   {
     name: "Guardian",
     id: "tier-pro",
-    href: "https://buy.stripe.com/test_8x2aEWfNEawP67FfpJfnO00?locale=en",
+    href: "https://buy.stripe.com/test_bJe14n7KP8PW8XadO92cg01?locale=en",
     price: "$14.99",
     description: "For power users and enterprise security needs.",
     features: [

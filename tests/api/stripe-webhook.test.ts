@@ -7,7 +7,6 @@ const mocks = vi.hoisted(() => ({
   constructEvent: vi.fn(),
   subscriptionsRetrieve: vi.fn(),
   sessionsUpdate: vi.fn(),
-  sessionsList: vi.fn(),
   emailsSend: vi.fn(),
   cryptoSign: vi.fn(),
   createPrivateKey: vi.fn().mockReturnValue("fake-private-key"),
@@ -18,7 +17,7 @@ vi.mock("stripe", () => ({
     return {
       webhooks: { constructEvent: mocks.constructEvent },
       subscriptions: { retrieve: mocks.subscriptionsRetrieve },
-      checkout: { sessions: { update: mocks.sessionsUpdate, list: mocks.sessionsList } },
+      checkout: { sessions: { update: mocks.sessionsUpdate } },
     };
   }),
 }));
@@ -100,7 +99,6 @@ describe("POST /api/stripe-webhook", () => {
     vi.clearAllMocks();
     // Restore sensible defaults after clearing.
     mocks.sessionsUpdate.mockResolvedValue({});
-    mocks.sessionsList.mockResolvedValue({ data: [] });
     mocks.emailsSend.mockResolvedValue({ id: "email_ok" });
     mocks.cryptoSign.mockReturnValue(Buffer.from("fakesig"));
     mocks.subscriptionsRetrieve.mockResolvedValue(ACTIVE_SUBSCRIPTION);
@@ -137,10 +135,11 @@ describe("POST /api/stripe-webhook", () => {
   });
 
   // --- checkout.session.completed ---
+  // This event only stores the licence key in session metadata (for the
+  // success page). It does NOT send email — invoice.paid owns email delivery.
 
   describe("checkout.session.completed", () => {
-    it("returns 200 early (no email, no metadata) when session.customer is null", async () => {
-      // Fix #2: null customer guard
+    it("returns 200 early when session.customer is null", async () => {
       mocks.constructEvent.mockReturnValue(checkoutEvent({ customer: null }));
       const res = await POST(makeRequest("{}", "sig") as any);
       expect(res.status).toBe(200);
@@ -150,17 +149,21 @@ describe("POST /api/stripe-webhook", () => {
       expect(mocks.sessionsUpdate).not.toHaveBeenCalled();
     });
 
-    it("retrieves subscription, sends email, and updates session metadata on success", async () => {
+    it("returns 200 early when session.subscription is absent", async () => {
+      mocks.constructEvent.mockReturnValue(checkoutEvent({ subscription: null }));
+      const res = await POST(makeRequest("{}", "sig") as any);
+      expect(res.status).toBe(200);
+      expect(mocks.subscriptionsRetrieve).not.toHaveBeenCalled();
+      expect(mocks.sessionsUpdate).not.toHaveBeenCalled();
+    });
+
+    it("retrieves subscription and updates session metadata (no email)", async () => {
       mocks.constructEvent.mockReturnValue(checkoutEvent());
       const res = await POST(makeRequest("{}", "sig") as any);
       expect(res.status).toBe(200);
-      // Subscription fetched with the ID from the session
       expect(mocks.subscriptionsRetrieve).toHaveBeenCalledWith("sub_abc");
-      // Email sent to the customer
-      expect(mocks.emailsSend).toHaveBeenCalledOnce();
-      const emailArg = mocks.emailsSend.mock.calls[0][0];
-      expect(emailArg.to).toBe("user@example.com");
-      expect(emailArg.html).toContain("."); // licence key contains dots
+      // No email — invoice.paid handles that
+      expect(mocks.emailsSend).not.toHaveBeenCalled();
       // Session metadata updated with the licence key
       expect(mocks.sessionsUpdate).toHaveBeenCalledWith(
         "cs_test_123",
@@ -169,34 +172,13 @@ describe("POST /api/stripe-webhook", () => {
         }),
       );
     });
-
-    it("returns 200 even when email sending throws (graceful degradation)", async () => {
-      mocks.constructEvent.mockReturnValue(checkoutEvent());
-      mocks.emailsSend.mockRejectedValueOnce(new Error("SMTP error"));
-      const res = await POST(makeRequest("{}", "sig") as any);
-      expect(res.status).toBe(200);
-      expect(await res.json()).toEqual({ received: true });
-      // Metadata still updated despite email failure
-      expect(mocks.sessionsUpdate).toHaveBeenCalled();
-    });
-
-    it("does not send email when customer_details.email is absent", async () => {
-      mocks.constructEvent.mockReturnValue(
-        checkoutEvent({ customer_details: null }),
-      );
-      const res = await POST(makeRequest("{}", "sig") as any);
-      expect(res.status).toBe(200);
-      expect(mocks.emailsSend).not.toHaveBeenCalled();
-    });
   });
 
   // --- invoice.paid ---
+  // This event owns all licence email delivery (first payment + renewals).
 
   describe("invoice.paid", () => {
-    it("generates a licence key and sends email for billing_reason=subscription_create when checkout did not handle it", async () => {
-      // When checkout.session.completed had no subscription (basil API),
-      // invoice.paid handles the first-payment email.
-      mocks.sessionsList.mockResolvedValue({ data: [] });
+    it("generates a licence key and sends email for first payment (subscription_create)", async () => {
       mocks.constructEvent.mockReturnValue(
         invoiceEvent("subscription_create"),
       );
@@ -204,23 +186,11 @@ describe("POST /api/stripe-webhook", () => {
       expect(res.status).toBe(200);
       expect(mocks.subscriptionsRetrieve).toHaveBeenCalledWith("sub_abc");
       expect(mocks.emailsSend).toHaveBeenCalledOnce();
+      const emailArg = mocks.emailsSend.mock.calls[0][0];
+      expect(emailArg.to).toBe("user@example.com");
     });
 
-    it("skips email for billing_reason=subscription_create when checkout already handled it", async () => {
-      // Dedup: checkout.session.completed already stored a licence_key in metadata.
-      mocks.sessionsList.mockResolvedValue({
-        data: [{ metadata: { licence_key: "header.payload.sig" } }],
-      });
-      mocks.constructEvent.mockReturnValue(
-        invoiceEvent("subscription_create"),
-      );
-      const res = await POST(makeRequest("{}", "sig") as any);
-      expect(res.status).toBe(200);
-      expect(mocks.subscriptionsRetrieve).not.toHaveBeenCalled();
-      expect(mocks.emailsSend).not.toHaveBeenCalled();
-    });
-
-    it("generates a licence key and sends email for billing_reason=subscription_cycle", async () => {
+    it("generates a licence key and sends email for renewal (subscription_cycle)", async () => {
       mocks.constructEvent.mockReturnValue(invoiceEvent("subscription_cycle"));
       const res = await POST(makeRequest("{}", "sig") as any);
       expect(res.status).toBe(200);
