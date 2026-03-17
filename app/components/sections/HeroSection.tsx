@@ -1,7 +1,8 @@
 import Image from "next/image";
 import FadeInView from "../FadeInView";
-import WaitlistModal from "../WaitlistModal";
 import ActionButton from "../ActionButton";
+import { Button } from "../ui/button";
+import { Mail } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -45,19 +46,30 @@ export default function HeroSection() {
               <span>Secure Your Wallet.</span>
             </FadeInView>
             <FadeInView delay={0.2}>
-              <span>Never Loose Access Again.</span>
+              <span>Never Lose Access Again.</span>
             </FadeInView>
           </h1>
           <FadeInView delay={0.3}>
             <p className="mt-8 text-lg text-pretty text-gray-400 sm:text-xl/8">
-              Turn your seed phrase into distributed shards using Shamir&apos;s
-              Secret Sharing. Eliminate single points of failure with
-              developer-grade cryptography tools.
+              Split your recovery phrase into secure fragments using Shamir's
+              Secret Sharing. Eliminate all risk of a single point of failure
+              with cutting-edge cryptography.
             </p>
           </FadeInView>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <FadeInView delay={0.4}>
-              <WaitlistModal />
+              <a href="mailto:mickaelriss6@gmail.com">
+                <Button
+                  variant="outline"
+                  className="group relative overflow-hidden border-border hover:border-primary/50 transition-all duration-300 cursor-pointer"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    <Mail size={16} />
+                    Contact Us
+                  </span>
+                  <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </Button>
+              </a>
             </FadeInView>
             <FadeInView delay={0.5}>
               <ActionButton />

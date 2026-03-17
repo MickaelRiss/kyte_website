@@ -1,7 +1,6 @@
 import { Button } from "../ui/button";
 import FadeInView from "../FadeInView";
 import Link from "next/link";
-import ActionButton from "../ActionButton";
 
 export default function Demo() {
   return (
@@ -26,7 +25,6 @@ export default function Demo() {
         </FadeInView>
         <FadeInView delay={0.1}>
           <div className="mt-8 flex justify-center gap-4">
-            <ActionButton textContent="Try It Free" />
             <Button
               variant="outline"
               className="cursor-pointer transition-all ease-in-out duration-300 hover:border-foreground/70 hover:text-foreground/70"

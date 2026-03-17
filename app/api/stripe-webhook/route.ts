@@ -60,10 +60,9 @@ export async function POST(request: NextRequest) {
       const invoice = event.data.object as Stripe.Invoice;
       const customerId = invoice.customer as string;
       const customerEmail = invoice.customer_email;
-      const subscriptionId =
-        invoice.parent?.subscription_details?.subscription as string;
-      const subscription =
-        await stripe.subscriptions.retrieve(subscriptionId);
+      const subscriptionId = invoice.parent?.subscription_details
+        ?.subscription as string;
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
       const periodEnd = getSubscriptionPeriodEnd(subscription);
       const licenceKey = generateLicenceKey(customerId, periodEnd);
 
@@ -84,19 +83,18 @@ export async function POST(request: NextRequest) {
 
         <!-- Header -->
         <tr><td style="padding:32px 32px 24px;text-align:center;border-bottom:1px solid #26262e;">
-          <span style="font-size:28px;font-weight:700;color:#efefef;letter-spacing:-0.5px;">Kyte</span>
-          <span style="display:inline-block;margin-left:8px;background-color:#c9a849;color:#0c0c0e;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;vertical-align:middle;letter-spacing:0.5px;">GUARDIAN</span>
+          <span style="font-size:28px;font-weight:700;color:#efefef;letter-spacing:-0.5px;">Guardian Plan</span>
         </td></tr>
 
         <!-- Body -->
         <tr><td style="padding:32px;">
           <h1 style="margin:0 0 8px;font-size:22px;font-weight:600;color:#efefef;">Your licence key</h1>
-          <p style="margin:0 0 24px;font-size:14px;color:#a0a0a9;line-height:1.6;">Copy the key below and paste it into the Kyte app to activate Guardian.</p>
+          <p style="margin:0 0 24px;font-size:14px;color:#a0a0a9;line-height:1.6;">Your licence refreshes automatically each time you open Kyte. Use the key below only if you need to activate manually.</p>
 
           <!-- Licence key box -->
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
             <tr><td style="background-color:#0c0c0e;border:1px solid #26262e;border-radius:12px;padding:20px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:10px;font-weight:600;color:#6b6b73;text-transform:uppercase;letter-spacing:1.5px;">Licence key — click to select all</p>
+              <p style="margin:0 0 8px;font-size:10px;font-weight:600;color:#6b6b73;text-transform:uppercase;letter-spacing:1.5px;">Double click to select all</p>
               <p style="margin:0;font-family:'SF Mono',Monaco,Menlo,'Courier New',monospace;font-size:13px;color:#c9a849;word-break:break-all;line-height:1.7;user-select:all;-webkit-user-select:all;-moz-user-select:all;">${licenceKey}</p>
             </td></tr>
           </table>
@@ -104,12 +102,12 @@ export async function POST(request: NextRequest) {
           <!-- Divider -->
           <div style="border-top:1px solid #26262e;margin:28px 0;"></div>
 
-          <p style="margin:0;font-size:13px;color:#6b6b73;line-height:1.6;">This key is linked to your subscription and refreshes automatically each time you open Kyte. No need to save it — we'll email you a new one at each renewal.</p>
+          <p style="margin:0;font-size:13px;color:#6b6b73;line-height:1.6;">This key is linked to your subscription and refreshes automatically each time you open Kyte. As long as your subscription is active, Guardian stays unlocked, no action needed on your end.</p>
         </td></tr>
 
         <!-- Footer -->
         <tr><td style="padding:20px 32px;border-top:1px solid #26262e;text-align:center;">
-          <p style="margin:0;font-size:12px;color:#6b6b73;">Kyte &mdash; kytesec.com</p>
+          <a href="https://kytesec.com" style="font-size:12px;color:#c9a849;text-decoration:none;">kytesec.com</a>
         </td></tr>
 
       </table>

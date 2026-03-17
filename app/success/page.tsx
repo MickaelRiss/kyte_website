@@ -14,7 +14,7 @@ async function getLicenceKey(sessionId: string): Promise<string | null> {
     const customerId =
       typeof session.customer === "string"
         ? session.customer
-        : session.customer?.id ?? null;
+        : (session.customer?.id ?? null);
 
     if (!customerId) return null;
 
@@ -46,10 +46,15 @@ export default async function SuccessPage({
           <h1 className="text-3xl font-bold text-white mb-4">
             Check your email
           </h1>
-          <p className="text-gray-400 text-base/7 mb-8">
-            Your Guardian licence key has been sent to your email address.
-            If you don&apos;t see it within a few minutes, check your spam folder.
+          <p className="text-gray-400 text-base/7 mb-4">
+            Your Guardian licence key has been sent to your email address. If
+            you don&apos;t see it within a few minutes, check your spam folder.
           </p>
+          <ol className="text-gray-400 text-sm/7 space-y-1 list-decimal list-inside mb-8">
+            <li>Open Kyte on your device</li>
+            <li>Go to Settings → Licence</li>
+            <li>Paste your licence key and tap Activate</li>
+          </ol>
           <Link
             href="/"
             className="text-primary hover:text-primary/80 text-sm font-semibold transition-colors"
@@ -69,8 +74,8 @@ export default async function SuccessPage({
           Your Guardian licence is ready
         </h1>
         <p className="text-gray-400 text-base/7 mb-10">
-          Copy the key below and paste it into Kyte when prompted to activate
-          your Guardian features.
+          Copy the key below and paste it into Kyte to activate your Guardian
+          features.
         </p>
 
         <LicenceDisplay licenceKey={licenceKey} />
