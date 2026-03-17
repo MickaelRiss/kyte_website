@@ -74,13 +74,49 @@ export async function POST(request: NextRequest) {
             to: customerEmail,
             subject: "Your Kyte Guardian Licence Key",
             html: `
-              <h2>Welcome to Kyte Guardian!</h2>
-              <p>Here is your licence key. Copy and paste it into the Kyte app to activate Guardian.</p>
-              <div style="background: #1a1a1b; color: #c9a849; padding: 16px; border-radius: 8px; font-family: monospace; word-break: break-all; margin: 16px 0;">
-                ${licenceKey}
-              </div>
-              <p>This key is linked to your subscription. It will refresh automatically each time you open Kyte.</p>
-              <p>— The Kyte Team</p>
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#0c0c0e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0c0c0e;padding:40px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background-color:#141316;border-radius:16px;border:1px solid #26262e;overflow:hidden;">
+
+        <!-- Header -->
+        <tr><td style="padding:32px 32px 24px;text-align:center;border-bottom:1px solid #26262e;">
+          <span style="font-size:28px;font-weight:700;color:#efefef;letter-spacing:-0.5px;">Kyte</span>
+          <span style="display:inline-block;margin-left:8px;background-color:#c9a849;color:#0c0c0e;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;vertical-align:middle;letter-spacing:0.5px;">GUARDIAN</span>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="padding:32px;">
+          <h1 style="margin:0 0 8px;font-size:22px;font-weight:600;color:#efefef;">Your licence key</h1>
+          <p style="margin:0 0 24px;font-size:14px;color:#a0a0a9;line-height:1.6;">Copy the key below and paste it into the Kyte app to activate Guardian.</p>
+
+          <!-- Licence key box -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="background-color:#0c0c0e;border:1px solid #26262e;border-radius:12px;padding:20px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:10px;font-weight:600;color:#6b6b73;text-transform:uppercase;letter-spacing:1.5px;">Licence key — click to select all</p>
+              <p style="margin:0;font-family:'SF Mono',Monaco,Menlo,'Courier New',monospace;font-size:13px;color:#c9a849;word-break:break-all;line-height:1.7;user-select:all;-webkit-user-select:all;-moz-user-select:all;">${licenceKey}</p>
+            </td></tr>
+          </table>
+
+          <!-- Divider -->
+          <div style="border-top:1px solid #26262e;margin:28px 0;"></div>
+
+          <p style="margin:0;font-size:13px;color:#6b6b73;line-height:1.6;">This key is linked to your subscription and refreshes automatically each time you open Kyte. No need to save it — we'll email you a new one at each renewal.</p>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="padding:20px 32px;border-top:1px solid #26262e;text-align:center;">
+          <p style="margin:0;font-size:12px;color:#6b6b73;">Kyte &mdash; kytesec.com</p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
             `,
           })
           .catch((err) => console.error("Failed to send licence email:", err));

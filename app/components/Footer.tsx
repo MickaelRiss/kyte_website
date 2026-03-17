@@ -35,6 +35,13 @@ export default function Footer() {
           >
             Privacy
           </Link>
+          <Link
+            href="https://billing.stripe.com/p/login/00w5kDc158PWa1edO92cg00"
+            target="_blank"
+            className="hover:text-foreground/80 transition-all ease-in-out duration-300"
+          >
+            Manage subscription
+          </Link>
         </div>
         <p className="text-gray-500 dark:text-neutral-300 transition hover:opacity-75 text-xs">
           © 2026 kyte.com. All rights reserved.

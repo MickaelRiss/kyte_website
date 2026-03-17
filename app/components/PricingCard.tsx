@@ -81,6 +81,7 @@ export default function PricingCard({
       ) : (
         <a
           href={subscription.href}
+          target="_blank"
           aria-describedby={subscription.id}
           className="bg-primary text-primary-foreground hover:bg-primary/90 mt-8 sm:mt-10 block rounded-md px-3.5 py-2.5 text-center text-sm font-semibold transition-all ease-in-out duration-200"
         >
