@@ -58,7 +58,7 @@ export default function HeroSection() {
           </FadeInView>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <FadeInView delay={0.4}>
-              <a href="mailto:mickaelriss6@gmail.com">
+              <a href="mailto:contact@kytesec.com">
                 <Button
                   variant="outline"
                   className="group relative overflow-hidden border-border hover:border-primary/50 transition-all duration-300 cursor-pointer"
