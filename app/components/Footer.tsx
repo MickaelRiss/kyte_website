@@ -36,7 +36,7 @@ export default function Footer() {
             Privacy
           </Link>
           <Link
-            href="https://billing.stripe.com/p/login/00w5kDc158PWa1edO92cg00"
+            href="https://billing.stripe.com/p/login/test_00w5kDc158PWa1edO92cg00"
             target="_blank"
             className="hover:text-foreground/80 transition-all ease-in-out duration-300"
           >
