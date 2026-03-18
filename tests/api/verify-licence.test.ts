@@ -10,6 +10,8 @@ const mocks = vi.hoisted(() => ({
   cryptoSign: vi.fn(),
   // Stripe subscriptions.list mock.
   subscriptionsList: vi.fn(),
+  // Stripe customers.retrieve mock (for device binding checks).
+  customersRetrieve: vi.fn(),
   createPrivateKey: vi.fn().mockReturnValue("fake-private-key"),
   createPublicKey: vi.fn().mockReturnValue("fake-public-key"),
 }));
@@ -28,7 +30,10 @@ vi.mock("crypto", async () => {
 
 vi.mock("stripe", () => ({
   default: vi.fn().mockImplementation(function () {
-    return { subscriptions: { list: mocks.subscriptionsList } };
+    return {
+      subscriptions: { list: mocks.subscriptionsList },
+      customers: { retrieve: mocks.customersRetrieve },
+    };
   }),
 }));
 
@@ -67,10 +72,15 @@ function makeLicenceKey(customerId: string, exp: number): string {
   return `${header}.${payload}.${sig}`;
 }
 
-function makeRequest(licenceKey: unknown): Request {
+const VALID_DEVICE_ID = "550e8400-e29b-41d4-a716-446655440000";
+const OTHER_DEVICE_ID = "661f9511-f3ac-52e5-b827-557766551111";
+
+function makeRequest(licenceKey: unknown, deviceId?: string): Request {
+  const body: Record<string, unknown> = { licence_key: licenceKey };
+  if (deviceId !== undefined) body.device_id = deviceId;
   return new Request("http://localhost/api/verify-licence", {
     method: "POST",
-    body: JSON.stringify({ licence_key: licenceKey }),
+    body: JSON.stringify(body),
     headers: { "content-type": "application/json" },
   });
 }
@@ -186,5 +196,45 @@ describe("POST /api/verify-licence", () => {
     mocks.subscriptionsList.mockResolvedValue({ data: [] });
     const res = await POST(makeRequest(key) as any);
     expect(res.status).toBe(403);
+  });
+
+  // --- Device binding checks ---
+
+  it("returns 409 when device_id does not match the bound device", async () => {
+    const key = makeLicenceKey("cus_bound", NOW + 7 * 24 * 3600);
+    mocks.customersRetrieve.mockResolvedValue({
+      metadata: { device_id: OTHER_DEVICE_ID },
+    });
+    mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
+    expect(res.status).toBe(409);
+    expect(await res.json()).toMatchObject({ error: "Device mismatch" });
+  });
+
+  it("proceeds normally when device_id matches the bound device", async () => {
+    const key = makeLicenceKey("cus_match", NOW + 7 * 24 * 3600);
+    mocks.customersRetrieve.mockResolvedValue({
+      metadata: { device_id: VALID_DEVICE_ID },
+    });
+    mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
+    expect(res.status).toBe(200);
+  });
+
+  it("proceeds normally when no device is bound yet", async () => {
+    const key = makeLicenceKey("cus_nodevice", NOW + 7 * 24 * 3600);
+    mocks.customersRetrieve.mockResolvedValue({ metadata: {} });
+    mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
+    expect(res.status).toBe(200);
+  });
+
+  it("skips device check when no device_id is provided (backward compat)", async () => {
+    const key = makeLicenceKey("cus_old", NOW + 7 * 24 * 3600);
+    mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
+    const res = await POST(makeRequest(key) as any);
+    expect(res.status).toBe(200);
+    // customers.retrieve should NOT be called when no device_id is sent
+    expect(mocks.customersRetrieve).not.toHaveBeenCalled();
   });
 });

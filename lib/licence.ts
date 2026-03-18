@@ -1,4 +1,4 @@
-import { sign, createPrivateKey } from "crypto";
+import { sign, verify, createPrivateKey, createPublicKey } from "crypto";
 import type Stripe from "stripe";
 
 // Lazily parsed on first use — avoids crashing at import time in test environments.
@@ -10,6 +10,68 @@ function getPrivateKey() {
     );
   }
   return _privateKey;
+}
+
+export const PUBLIC_KEY = createPublicKey(`-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAysSG93pDLjmsnY88yDT/71WqBHA8jr2vqdiYh2T/YlA=
+-----END PUBLIC KEY-----`);
+
+export const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function verifyAndDecodeLicenceKey(
+  licenceKey: string,
+): { customerId: string; payload: Record<string, unknown> } | { error: string; status: number } {
+  const parts = licenceKey.split(".");
+  if (parts.length !== 3) {
+    return { error: "Invalid key format", status: 400 };
+  }
+
+  const [headerB64, payloadB64, signatureB64] = parts;
+  if (
+    !verify(
+      null,
+      Buffer.from(`${headerB64}.${payloadB64}`),
+      PUBLIC_KEY,
+      base64urlDecode(signatureB64),
+    )
+  ) {
+    return { error: "Invalid signature", status: 403 };
+  }
+
+  const payload = JSON.parse(base64urlDecode(payloadB64).toString("utf-8"));
+  const customerId = payload.sub;
+  if (!customerId || typeof customerId !== "string") {
+    return { error: "Invalid payload", status: 400 };
+  }
+
+  return { customerId, payload };
+}
+
+export async function findActiveSubscription(
+  stripe: Stripe,
+  customerId: string,
+): Promise<Stripe.Subscription | null> {
+  const subscriptions = await stripe.subscriptions.list({
+    customer: customerId,
+    status: "active",
+    limit: 1,
+  });
+
+  const activeSub = subscriptions.data[0];
+  if (activeSub) return activeSub;
+
+  const allSubs = await stripe.subscriptions.list({
+    customer: customerId,
+    limit: 1,
+  });
+
+  const sub = allSubs.data[0];
+  if (sub && getSubscriptionPeriodEnd(sub) > Math.floor(Date.now() / 1000)) {
+    return sub;
+  }
+
+  return null;
 }
 
 export function base64urlEncode(data: string | Buffer): string {
