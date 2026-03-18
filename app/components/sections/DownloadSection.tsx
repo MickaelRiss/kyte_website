@@ -13,14 +13,16 @@ const downloadOn = [
   {
     logo: "/microsoft.svg",
     name: "Microsoft",
-    released: false,
+    released: true,
     extension: ".exe",
+    url: release.assets.windows,
   },
   {
     logo: "/linux.svg",
     name: "Linux",
-    released: false,
+    released: true,
     extension: "tar.gz",
+    url: release.assets.linux,
   },
 ];
 
