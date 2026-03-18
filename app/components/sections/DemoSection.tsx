@@ -25,14 +25,17 @@ export default function Demo() {
         </FadeInView>
         <FadeInView delay={0.1}>
           <div className="mt-8 flex justify-center gap-4">
-            <Button
-              variant="outline"
-              className="cursor-pointer transition-all ease-in-out duration-300 hover:border-foreground/70 hover:text-foreground/70"
-            >
-              <Link href="https://kyte.gitbook.io/kyte-docs/" target="_blank">
-                Read Docs
-              </Link>
-            </Button>
+            <Link href="https://kyte.gitbook.io/kyte-docs/" target="_blank">
+              <Button
+                variant="outline"
+                className="group relative overflow-hidden border-border hover:border-primary/50 transition-all duration-300 cursor-pointer"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  Read Docs
+                </span>
+                <div className="absolute inset-0 bg-linear-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </Button>
+            </Link>
           </div>
         </FadeInView>
       </div>
