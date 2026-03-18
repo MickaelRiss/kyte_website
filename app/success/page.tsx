@@ -52,7 +52,7 @@ export default async function SuccessPage({
           </p>
           <ol className="text-gray-400 text-sm/7 space-y-1 list-decimal list-inside mb-8">
             <li>Open Kyte on your device</li>
-            <li>Go to Settings → Licence</li>
+            <li>Tap on "I have a key" button</li>
             <li>Paste your licence key and tap Activate</li>
           </ol>
           <Link
@@ -84,7 +84,7 @@ export default async function SuccessPage({
           <h2 className="text-white font-semibold mb-3">Next steps</h2>
           <ol className="text-gray-400 text-sm/7 space-y-1 list-decimal list-inside">
             <li>Open Kyte on your device</li>
-            <li>Go to Settings → Licence</li>
+            <li>Tap on "I have a key" button</li>
             <li>Paste your licence key and tap Activate</li>
           </ol>
         </div>
