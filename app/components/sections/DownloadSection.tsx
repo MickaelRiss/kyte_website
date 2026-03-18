@@ -20,9 +20,9 @@ const downloadOn = [
   {
     logo: "/linux.svg",
     name: "Linux",
-    released: true,
+    released: false,
     extension: "tar.gz",
-    url: release.assets.linux,
+    // url: release.assets.linux,
   },
 ];
 
