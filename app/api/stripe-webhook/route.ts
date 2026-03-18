@@ -82,48 +82,47 @@ export async function POST(request: NextRequest) {
             to: customerEmail,
             subject: "Your Kyte Guardian Licence Key",
             html: `
-<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background-color:#0c0c0e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0c0c0e;padding:40px 16px;">
-    <tr><td align="center">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background-color:#141316;border-radius:16px;border:1px solid #26262e;overflow:hidden;">
+              <!DOCTYPE html>
+              <html lang="en">
+              <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+              <body style="margin:0;padding:0;background-color:#0c0c0e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0c0c0e;padding:40px 16px;">
+                  <tr><td align="center">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background-color:#141316;border-radius:16px;border:1px solid #26262e;overflow:hidden;">
 
-        <!-- Header -->
-        <tr><td style="padding:32px 32px 24px;text-align:center;border-bottom:1px solid #26262e;">
-          <span style="font-size:28px;font-weight:700;color:#efefef;letter-spacing:-0.5px;">Guardian Plan</span>
-        </td></tr>
+                      <tr><td style="padding:32px 32px 24px;text-align:center;border-bottom:1px solid #26262e;">
+                        <span style="font-size:28px;font-weight:700;color:#efefef;letter-spacing:-0.5px;">Guardian Plan</span>
+                      </td></tr>
 
-        <!-- Body -->
-        <tr><td style="padding:32px;">
-          <h1 style="margin:0 0 8px;font-size:22px;font-weight:600;color:#efefef;">Your licence key</h1>
-          <p style="margin:0 0 24px;font-size:14px;color:#a0a0a9;line-height:1.6;">Your licence refreshes automatically each time you open Kyte. Use the key below only if you need to activate manually.</p>
+                      <tr><td style="padding:32px;">
+                        <h1 style="margin:0 0 8px;font-size:22px;font-weight:600;color:#efefef;">Your licence key</h1>
+                        <p style="margin:0 0 24px;font-size:14px;color:#a0a0a9;line-height:1.6;">Your licence refreshes automatically each time you open Kyte. Use the key below only if you need to activate manually.</p>
 
-          <!-- Licence key box -->
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td style="background-color:#0c0c0e;border:1px solid #26262e;border-radius:12px;padding:20px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:10px;font-weight:600;color:#6b6b73;text-transform:uppercase;letter-spacing:1.5px;">Double click to select all</p>
-              <p style="margin:0;font-family:'SF Mono',Monaco,Menlo,'Courier New',monospace;font-size:13px;color:#c9a849;word-break:break-all;line-height:1.7;user-select:all;-webkit-user-select:all;-moz-user-select:all;">${licenceKey}</p>
-            </td></tr>
-          </table>
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                          <tr><td style="background-color:#0c0c0e;border:1px solid #26262e;border-radius:12px;padding:20px;text-align:center;">
+                            <p style="margin:0 0 8px;font-size:10px;font-weight:600;color:#6b6b73;text-transform:uppercase;letter-spacing:1.5px;">Double click to select all</p>
+                            <p style="margin:0;font-family:'SF Mono',Monaco,Menlo,'Courier New',monospace;font-size:13px;color:#c9a849;word-break:break-all;line-height:1.7;user-select:all;-webkit-user-select:all;-moz-user-select:all;">${licenceKey}</p>
+                          </td></tr>
+                        </table>
 
-          <!-- Divider -->
-          <div style="border-top:1px solid #26262e;margin:28px 0;"></div>
+                        <p style="margin:16px 0 0;font-size:12px;color:#d97706;line-height:1.5;text-align:center;">
+                          <strong>Note:</strong> This key is for <strong>single-use only</strong>. It cannot be used on multiple devices or reused after uninstalling the app.
+                        </p>
 
-          <p style="margin:0;font-size:13px;color:#6b6b73;line-height:1.6;">This key is linked to your subscription and refreshes automatically each time you open Kyte. As long as your subscription is active, Guardian stays unlocked, no action needed on your end.</p>
-        </td></tr>
+                        <div style="border-top:1px solid #26262e;margin:28px 0;"></div>
 
-        <!-- Footer -->
-        <tr><td style="padding:20px 32px;border-top:1px solid #26262e;text-align:center;">
-          <a href="https://kytesec.com" style="font-size:12px;color:#c9a849;text-decoration:none;">kytesec.com</a>
-        </td></tr>
+                        <p style="margin:0;font-size:13px;color:#6b6b73;line-height:1.6;">This key is linked to your subscription and refreshes automatically each time you open Kyte. As long as your subscription is active, Guardian stays unlocked, no action needed on your end.</p>
+                      </td></tr>
 
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>
+                      <tr><td style="padding:20px 32px;border-top:1px solid #26262e;text-align:center;">
+                        <a href="https://kytesec.com" style="font-size:12px;color:#c9a849;text-decoration:none;">kytesec.com</a>
+                      </td></tr>
+
+                    </table>
+                  </td></tr>
+                </table>
+              </body>
+              </html>
             `,
           })
           .catch((err) => console.error("Failed to send licence email:", err));

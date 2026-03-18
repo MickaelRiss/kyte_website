@@ -50,11 +50,23 @@ export default async function SuccessPage({
             Your Guardian licence key has been sent to your email address. If
             you don&apos;t see it within a few minutes, check your spam folder.
           </p>
+
           <ol className="text-gray-400 text-sm/7 space-y-1 list-decimal list-inside mb-8">
             <li>Open Kyte on your device</li>
             <li>Tap on "I have a key" button</li>
             <li>Paste your licence key and tap Activate</li>
           </ol>
+
+          {/* Section d'avertissement importante */}
+          <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-8 text-left">
+            <p className="text-primary text-sm leading-relaxed">
+              <strong>Important:</strong> This key is for{" "}
+              <strong>single-use only</strong>. It cannot be transferred to
+              another device or reused if the app is uninstalled and
+              reinstalled.
+            </p>
+          </div>
+
           <Link
             href="/"
             className="text-primary hover:text-primary/80 text-sm font-semibold transition-colors"
@@ -68,30 +80,32 @@ export default async function SuccessPage({
 
   return (
     <main className="flex-1 flex items-center justify-center px-6 min-h-below-navbar">
-      <div className="max-w-2xl mx-auto text-center w-full">
-        <p className="text-5xl mb-6 text-primary">✓</p>
-        <h1 className="text-3xl font-bold text-white mb-4">
-          Your Guardian licence is ready
-        </h1>
-        <p className="text-gray-400 text-base/7 mb-10">
-          Copy the key below and paste it into Kyte to activate your Guardian
-          features.
+      <div className="max-w-2xl mx-auto text-center">
+        <p className="text-5xl mb-6">✉️</p>
+        <h1 className="text-3xl font-bold text-white mb-4">Check your email</h1>
+        <p className="text-gray-400 text-base/7 mb-4">
+          Your Guardian licence key has been sent to your email address. If you
+          don&apos;t see it within a few minutes, check your spam folder.
         </p>
 
-        <LicenceDisplay licenceKey={licenceKey} />
+        <ol className="text-gray-400 text-sm/7 space-y-1 list-decimal list-inside mb-8">
+          <li>Open Kyte on your device</li>
+          <li>Tap on "I have a key" button</li>
+          <li>Paste your licence key and tap Activate</li>
+        </ol>
 
-        <div className="mt-10 text-left bg-white/5 rounded-2xl p-6">
-          <h2 className="text-white font-semibold mb-3">Next steps</h2>
-          <ol className="text-gray-400 text-sm/7 space-y-1 list-decimal list-inside">
-            <li>Open Kyte on your device</li>
-            <li>Tap on "I have a key" button</li>
-            <li>Paste your licence key and tap Activate</li>
-          </ol>
+        {/* Section d'avertissement importante */}
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-8 text-left">
+          <p className="text-primary text-sm leading-relaxed">
+            <strong>Important:</strong> This key is for{" "}
+            <strong>single-use only</strong>. It cannot be transferred to
+            another device or reused if the app is uninstalled and reinstalled.
+          </p>
         </div>
 
         <Link
           href="/"
-          className="inline-block mt-8 text-primary hover:text-primary/80 text-sm font-semibold transition-colors"
+          className="text-primary hover:text-primary/80 text-sm font-semibold transition-colors"
         >
           ← Back to home
         </Link>
