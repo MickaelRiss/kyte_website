@@ -13,12 +13,22 @@ jobs:
 
       - name: Fetch latest release and update data
         run: |
-          RELEASE=$(curl -s https://api.github.com/repos/MickaelRiss/kyte/releases/latest)
+          # On crée le dossier data s'il n'existe pas pour éviter une erreur
+          mkdir -p data
+
+          # On ajoute l'en-tête d'autorisation pour le curl
+          RELEASE=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/MickaelRiss/kyte/releases/latest)
+
+          # Debug: afficher la réponse si jq échoue
+          if echo "$RELEASE" | jq -e '.message' >/dev/null; then
+            echo "Erreur API GitHub: $(echo "$RELEASE" | jq -r '.message')"
+            exit 1
+          fi
 
           VERSION=$(echo "$RELEASE" | jq -r '.tag_name | ltrimstr("v")')
-          MACOS_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".dmg")) | .browser_download_url')
-          WINDOWS_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".exe")) | .browser_download_url')
-          LINUX_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".AppImage")) | .browser_download_url')
+          MACOS_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".dmg")) | .browser_download_url' | head -n 1)
+          WINDOWS_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".exe")) | .browser_download_url' | head -n 1)
+          LINUX_URL=$(echo "$RELEASE" | jq -r '.assets[] | select(.name | endswith(".AppImage")) | .browser_download_url' | head -n 1)
 
           jq -n \
             --arg version "$VERSION" \
