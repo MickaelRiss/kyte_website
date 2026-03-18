@@ -7,6 +7,8 @@ const mocks = vi.hoisted(() => ({
   constructEvent: vi.fn(),
   subscriptionsRetrieve: vi.fn(),
   sessionsUpdate: vi.fn(),
+  customersUpdate: vi.fn(),
+  subscriptionsUpdate: vi.fn(),
   emailsSend: vi.fn(),
   cryptoSign: vi.fn(),
   createPrivateKey: vi.fn().mockReturnValue("fake-private-key"),
@@ -16,8 +18,12 @@ vi.mock("stripe", () => ({
   default: vi.fn().mockImplementation(function () {
     return {
       webhooks: { constructEvent: mocks.constructEvent },
-      subscriptions: { retrieve: mocks.subscriptionsRetrieve },
+      subscriptions: {
+        retrieve: mocks.subscriptionsRetrieve,
+        update: mocks.subscriptionsUpdate,
+      },
       checkout: { sessions: { update: mocks.sessionsUpdate } },
+      customers: { update: mocks.customersUpdate },
     };
   }),
 }));
@@ -99,6 +105,8 @@ describe("POST /api/stripe-webhook", () => {
     vi.clearAllMocks();
     // Restore sensible defaults after clearing.
     mocks.sessionsUpdate.mockResolvedValue({});
+    mocks.customersUpdate.mockResolvedValue({});
+    mocks.subscriptionsUpdate.mockResolvedValue({});
     mocks.emailsSend.mockResolvedValue({ id: "email_ok" });
     mocks.cryptoSign.mockReturnValue(Buffer.from("fakesig"));
     mocks.subscriptionsRetrieve.mockResolvedValue(ACTIVE_SUBSCRIPTION);
@@ -157,7 +165,7 @@ describe("POST /api/stripe-webhook", () => {
       expect(mocks.sessionsUpdate).not.toHaveBeenCalled();
     });
 
-    it("retrieves subscription and updates session metadata (no email)", async () => {
+    it("retrieves subscription and updates session, customer, and subscription metadata (no email)", async () => {
       mocks.constructEvent.mockReturnValue(checkoutEvent());
       const res = await POST(makeRequest("{}", "sig") as any);
       expect(res.status).toBe(200);
@@ -167,6 +175,20 @@ describe("POST /api/stripe-webhook", () => {
       // Session metadata updated with the licence key
       expect(mocks.sessionsUpdate).toHaveBeenCalledWith(
         "cs_test_123",
+        expect.objectContaining({
+          metadata: { licence_key: expect.stringContaining(".") },
+        }),
+      );
+      // Customer metadata updated
+      expect(mocks.customersUpdate).toHaveBeenCalledWith(
+        "cus_abc",
+        expect.objectContaining({
+          metadata: { licence_key: expect.stringContaining(".") },
+        }),
+      );
+      // Subscription metadata updated
+      expect(mocks.subscriptionsUpdate).toHaveBeenCalledWith(
+        "sub_abc",
         expect.objectContaining({
           metadata: { licence_key: expect.stringContaining(".") },
         }),
@@ -198,6 +220,18 @@ describe("POST /api/stripe-webhook", () => {
       expect(mocks.emailsSend).toHaveBeenCalledOnce();
       const emailArg = mocks.emailsSend.mock.calls[0][0];
       expect(emailArg.to).toBe("user@example.com");
+    });
+
+    it("updates customer metadata with licence key", async () => {
+      mocks.constructEvent.mockReturnValue(invoiceEvent("subscription_create"));
+      const res = await POST(makeRequest("{}", "sig") as any);
+      expect(res.status).toBe(200);
+      expect(mocks.customersUpdate).toHaveBeenCalledWith(
+        "cus_abc",
+        expect.objectContaining({
+          metadata: { licence_key: expect.stringContaining(".") },
+        }),
+      );
     });
 
     it("returns 200 without email when customer_email is null", async () => {

@@ -6,11 +6,16 @@ import {
   findActiveSubscription,
   generateLicenceKey,
   getSubscriptionPeriodEnd,
+  ensureDeviceBound,
 } from "@/lib/licence";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: NextRequest) {
+  console.warn(
+    "DEPRECATED: /activate-licence is deprecated. Use /verify-licence instead.",
+  );
+
   try {
     const body = await request.json();
     const { licence_key: licenceKey, device_id: deviceId } = body;
@@ -48,19 +53,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const boundDeviceId = customer.metadata?.device_id;
-    if (boundDeviceId && boundDeviceId !== deviceId) {
+    const bindResult = await ensureDeviceBound(
+      stripe,
+      customerId,
+      deviceId,
+      customer,
+    );
+    if (bindResult) {
       return NextResponse.json(
-        { error: "Device mismatch" },
-        { status: 409 },
+        { error: bindResult.error },
+        { status: bindResult.status },
       );
-    }
-
-    // Bind device if not already bound
-    if (!boundDeviceId) {
-      await stripe.customers.update(customerId, {
-        metadata: { device_id: deviceId },
-      });
     }
 
     return NextResponse.json({

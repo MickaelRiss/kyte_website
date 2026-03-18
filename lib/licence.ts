@@ -95,6 +95,24 @@ export function getSubscriptionPeriodEnd(
   return subscription?.items?.data[0]?.current_period_end ?? 0;
 }
 
+export async function ensureDeviceBound(
+  stripe: Stripe,
+  customerId: string,
+  deviceId: string,
+  customer: Stripe.Customer,
+): Promise<{ error: string; status: number } | null> {
+  const boundDeviceId = customer.metadata?.device_id;
+  if (boundDeviceId && boundDeviceId !== deviceId) {
+    return { error: "Device mismatch", status: 409 };
+  }
+  if (!boundDeviceId) {
+    await stripe.customers.update(customerId, {
+      metadata: { device_id: deviceId },
+    });
+  }
+  return null;
+}
+
 export function generateLicenceKey(customerId: string, periodEnd: number): string {
   const header = base64urlEncode(JSON.stringify({ alg: "EdDSA", typ: "licence" }));
   const payload = base64urlEncode(

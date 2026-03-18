@@ -12,6 +12,8 @@ const mocks = vi.hoisted(() => ({
   subscriptionsList: vi.fn(),
   // Stripe customers.retrieve mock (for device binding checks).
   customersRetrieve: vi.fn(),
+  // Stripe customers.update mock (for device binding).
+  customersUpdate: vi.fn(),
   createPrivateKey: vi.fn().mockReturnValue("fake-private-key"),
   createPublicKey: vi.fn().mockReturnValue("fake-public-key"),
 }));
@@ -32,7 +34,10 @@ vi.mock("stripe", () => ({
   default: vi.fn().mockImplementation(function () {
     return {
       subscriptions: { list: mocks.subscriptionsList },
-      customers: { retrieve: mocks.customersRetrieve },
+      customers: {
+        retrieve: mocks.customersRetrieve,
+        update: mocks.customersUpdate,
+      },
     };
   }),
 }));
@@ -97,6 +102,7 @@ describe("POST /api/verify-licence", () => {
     // Default: valid signature, real-looking sign output.
     mocks.cryptoVerify.mockReturnValue(true);
     mocks.cryptoSign.mockReturnValue(Buffer.from("fakesig"));
+    mocks.customersUpdate.mockResolvedValue({});
   });
 
   // --- Input validation ---
@@ -104,7 +110,7 @@ describe("POST /api/verify-licence", () => {
   it("returns 400 when licence_key is missing from body", async () => {
     const req = new Request("http://localhost/api/verify-licence", {
       method: "POST",
-      body: JSON.stringify({}),
+      body: JSON.stringify({ device_id: VALID_DEVICE_ID }),
       headers: { "content-type": "application/json" },
     });
     const res = await POST(req as any);
@@ -112,9 +118,23 @@ describe("POST /api/verify-licence", () => {
   });
 
   it("returns 400 when key does not have exactly 3 dot-separated parts", async () => {
-    const res = await POST(makeRequest("foo.bar") as any);
+    const res = await POST(makeRequest("foo.bar", VALID_DEVICE_ID) as any);
     expect(res.status).toBe(400);
     expect(await res.json()).toMatchObject({ error: "Invalid key format" });
+  });
+
+  it("returns 400 when device_id is missing", async () => {
+    const key = makeLicenceKey("cus_123", NOW + 7 * 24 * 3600);
+    const res = await POST(makeRequest(key) as any);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toMatchObject({ error: "Invalid device_id" });
+  });
+
+  it("returns 400 when device_id is not a valid UUID", async () => {
+    const key = makeLicenceKey("cus_123", NOW + 7 * 24 * 3600);
+    const res = await POST(makeRequest(key, "not-a-uuid") as any);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toMatchObject({ error: "Invalid device_id" });
   });
 
   // --- Signature verification ---
@@ -122,19 +142,19 @@ describe("POST /api/verify-licence", () => {
   it("returns 403 when Ed25519 signature is invalid", async () => {
     mocks.cryptoVerify.mockReturnValue(false);
     const key = makeLicenceKey("cus_123", NOW + 7 * 24 * 3600);
-    const res = await POST(makeRequest(key) as any);
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     expect(res.status).toBe(403);
     expect(await res.json()).toMatchObject({ error: "Invalid signature" });
     // Stripe must not be called when signature is bad.
     expect(mocks.subscriptionsList).not.toHaveBeenCalled();
   });
 
-  // --- 30-day grace period check (Fix #5) ---
+  // --- 30-day grace period check ---
 
   it("returns 403 without calling Stripe when key is more than 30 days past expiry", async () => {
     const expiredExp = NOW - 31 * 24 * 3600; // 31 days ago
     const key = makeLicenceKey("cus_123", expiredExp);
-    const res = await POST(makeRequest(key) as any);
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     expect(res.status).toBe(403);
     expect(await res.json()).toMatchObject({ error: "Key expired" });
     expect(mocks.subscriptionsList).not.toHaveBeenCalled();
@@ -144,7 +164,8 @@ describe("POST /api/verify-licence", () => {
     const exp = NOW - 29 * 24 * 3600; // 29 days ago — still within grace
     const key = makeLicenceKey("cus_123", exp);
     mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
-    const res = await POST(makeRequest(key) as any);
+    mocks.customersRetrieve.mockResolvedValue({ metadata: {} });
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     // Grace period check passes → Stripe is queried.
     expect(mocks.subscriptionsList).toHaveBeenCalled();
     expect(res.status).toBe(200);
@@ -155,7 +176,8 @@ describe("POST /api/verify-licence", () => {
   it("returns a fresh licence key when subscription is active", async () => {
     const key = makeLicenceKey("cus_active", NOW + 7 * 24 * 3600);
     mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
-    const res = await POST(makeRequest(key) as any);
+    mocks.customersRetrieve.mockResolvedValue({ metadata: {} });
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(typeof body.licence_key).toBe("string");
@@ -172,7 +194,8 @@ describe("POST /api/verify-licence", () => {
       .mockResolvedValueOnce({
         data: [{ items: { data: [{ current_period_end: NOW + 5 * 24 * 3600 }] } }],
       });
-    const res = await POST(makeRequest(key) as any);
+    mocks.customersRetrieve.mockResolvedValue({ metadata: {} });
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(typeof body.licence_key).toBe("string");
@@ -180,21 +203,23 @@ describe("POST /api/verify-licence", () => {
 
   it("returns 403 when subscription period has truly ended", async () => {
     const key = makeLicenceKey("cus_expired", NOW + 7 * 24 * 3600);
+    mocks.customersRetrieve.mockResolvedValue({ metadata: {} });
     mocks.subscriptionsList
       .mockResolvedValueOnce({ data: [] }) // no active sub
       .mockResolvedValueOnce({
         data: [{ items: { data: [{ current_period_end: NOW - 5 * 24 * 3600 }] } }], // past period end
       });
-    const res = await POST(makeRequest(key) as any);
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     expect(res.status).toBe(403);
     expect(await res.json()).toMatchObject({ error: "Subscription expired" });
   });
 
   it("returns 403 when customer has no subscriptions at all", async () => {
     const key = makeLicenceKey("cus_nosub", NOW + 7 * 24 * 3600);
+    mocks.customersRetrieve.mockResolvedValue({ metadata: {} });
     // Both calls return empty: no active sub, no historical sub.
     mocks.subscriptionsList.mockResolvedValue({ data: [] });
-    const res = await POST(makeRequest(key) as any);
+    const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     expect(res.status).toBe(403);
   });
 
@@ -219,22 +244,19 @@ describe("POST /api/verify-licence", () => {
     mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
     const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     expect(res.status).toBe(200);
+    // Should NOT update Stripe (already bound)
+    expect(mocks.customersUpdate).not.toHaveBeenCalled();
   });
 
-  it("proceeds normally when no device is bound yet", async () => {
+  it("binds device on first use when no device is bound yet", async () => {
     const key = makeLicenceKey("cus_nodevice", NOW + 7 * 24 * 3600);
     mocks.customersRetrieve.mockResolvedValue({ metadata: {} });
     mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
     const res = await POST(makeRequest(key, VALID_DEVICE_ID) as any);
     expect(res.status).toBe(200);
-  });
-
-  it("skips device check when no device_id is provided (backward compat)", async () => {
-    const key = makeLicenceKey("cus_old", NOW + 7 * 24 * 3600);
-    mocks.subscriptionsList.mockResolvedValue({ data: [ACTIVE_SUB] });
-    const res = await POST(makeRequest(key) as any);
-    expect(res.status).toBe(200);
-    // customers.retrieve should NOT be called when no device_id is sent
-    expect(mocks.customersRetrieve).not.toHaveBeenCalled();
+    // Should have written the device_id to Stripe
+    expect(mocks.customersUpdate).toHaveBeenCalledWith("cus_nodevice", {
+      metadata: { device_id: VALID_DEVICE_ID },
+    });
   });
 });

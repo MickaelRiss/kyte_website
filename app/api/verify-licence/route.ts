@@ -6,6 +6,7 @@ import {
   findActiveSubscription,
   generateLicenceKey,
   getSubscriptionPeriodEnd,
+  ensureDeviceBound,
 } from "@/lib/licence";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -14,13 +15,17 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const licenceKey = body.licence_key;
-    const deviceId =
-      typeof body.device_id === "string" && UUID_RE.test(body.device_id)
-        ? body.device_id
-        : null;
+    const deviceId = body.device_id;
 
     if (typeof licenceKey !== "string" || !licenceKey.includes(".")) {
       return NextResponse.json({ error: "Invalid key" }, { status: 400 });
+    }
+
+    if (typeof deviceId !== "string" || !UUID_RE.test(deviceId)) {
+      return NextResponse.json(
+        { error: "Invalid device_id" },
+        { status: 400 },
+      );
     }
 
     const result = verifyAndDecodeLicenceKey(licenceKey);
@@ -38,42 +43,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Key expired" }, { status: 403 });
     }
 
-    // Run independent Stripe calls in parallel when device check is needed
-    if (deviceId) {
-      const [customer, activeSub] = await Promise.all([
-        stripe.customers.retrieve(customerId) as Promise<Stripe.Customer>,
-        findActiveSubscription(stripe, customerId),
-      ]);
+    const [customer, activeSub] = await Promise.all([
+      stripe.customers.retrieve(customerId) as Promise<Stripe.Customer>,
+      findActiveSubscription(stripe, customerId),
+    ]);
 
-      const boundDeviceId = customer.metadata?.device_id;
-      if (boundDeviceId && boundDeviceId !== deviceId) {
-        return NextResponse.json(
-          { error: "Device mismatch" },
-          { status: 409 },
-        );
-      }
-
-      if (!activeSub) {
-        return NextResponse.json(
-          { error: "Subscription expired" },
-          { status: 403 },
-        );
-      }
-
-      return NextResponse.json({
-        licence_key: generateLicenceKey(
-          customerId,
-          getSubscriptionPeriodEnd(activeSub),
-        ),
-      });
-    }
-
-    // No device check — just verify subscription
-    const activeSub = await findActiveSubscription(stripe, customerId);
     if (!activeSub) {
       return NextResponse.json(
         { error: "Subscription expired" },
         { status: 403 },
+      );
+    }
+
+    const bindResult = await ensureDeviceBound(
+      stripe,
+      customerId,
+      deviceId,
+      customer,
+    );
+    if (bindResult) {
+      return NextResponse.json(
+        { error: bindResult.error },
+        { status: bindResult.status },
       );
     }
 

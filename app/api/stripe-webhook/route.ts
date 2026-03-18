@@ -52,10 +52,19 @@ export async function POST(request: NextRequest) {
         getSubscriptionPeriodEnd(subscription),
       );
 
-      // Store in session metadata so the success page can display the key
-      await stripe.checkout.sessions.update(session.id, {
-        metadata: { licence_key: licenceKey },
-      });
+      // Store in session metadata so the success page can display the key,
+      // and persist on customer + subscription for dashboard visibility.
+      await Promise.all([
+        stripe.checkout.sessions.update(session.id, {
+          metadata: { licence_key: licenceKey },
+        }),
+        stripe.customers.update(session.customer as string, {
+          metadata: { licence_key: licenceKey },
+        }),
+        stripe.subscriptions.update(session.subscription as string, {
+          metadata: { licence_key: licenceKey },
+        }),
+      ]);
     } else if (event.type === "invoice.paid") {
       const invoice = event.data.object as Stripe.Invoice;
       const customerId = invoice.customer as string;
@@ -119,6 +128,10 @@ export async function POST(request: NextRequest) {
           })
           .catch((err) => console.error("Failed to send licence email:", err));
       }
+
+      await stripe.customers.update(customerId, {
+        metadata: { licence_key: licenceKey },
+      });
     }
   } catch (err) {
     console.error("Stripe webhook business logic error:", err);
