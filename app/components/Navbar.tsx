@@ -33,6 +33,16 @@ export default function Navbar({ sections }: { sections: string[] }) {
               </Link>
             </li>
           ))}
+          <li>
+            <Link
+              className="text-sm transition-all ease-in-out hover:text-primary duration-300"
+              href="https://kyte.gitbook.io/kyte-doc"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Documentation
+            </Link>
+          </li>
         </ul>
         <ActionButton textSize="text-xs" />
       </nav>
