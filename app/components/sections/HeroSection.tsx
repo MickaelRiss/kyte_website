@@ -2,7 +2,7 @@ import Image from "next/image";
 import FadeInView from "../FadeInView";
 import ActionButton from "../ActionButton";
 import { Button } from "../ui/button";
-import { Mail } from "lucide-react";
+import { Mail, ShieldOff } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -36,8 +36,10 @@ export default function HeroSection() {
       <div className="mx-auto max-w-5xl flex flex-col items-center justify-center">
         <FadeInView delay={0.1}>
           <div className="border rounded-full ring-1 ring-primary/90 border-primary bg-primary/40 px-4 py-1 text-sm whitespace-nowrap text-white inline-flex gap-3 items-center hover:ring-primary transition-all">
-            <span className="w-2 h-2 rounded-full bg-primary"></span>
-            <span>v1.0 is live now</span>
+            <ShieldOff size={14} />
+            <span>
+              Zero-knowledge : we never see your seeds, keys, or fragments
+            </span>
           </div>
         </FadeInView>
         <div className="text-center mt-8">
@@ -51,9 +53,9 @@ export default function HeroSection() {
           </h1>
           <FadeInView delay={0.3}>
             <p className="mt-8 text-lg text-pretty text-gray-400 sm:text-xl/8">
-              Split your recovery phrase into secure fragments using Shamir's
-              Secret Sharing. Eliminate all risk of a single point of failure
-              with cutting-edge cryptography.
+              Split your recovery phrase into secure fragments using
+              Shamir&apos;s Secret Sharing. No account. No data stored. Nothing
+              ever leaves your device.
             </p>
           </FadeInView>
           <div className="mt-10 flex items-center justify-center gap-x-6">

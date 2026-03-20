@@ -1,5 +1,5 @@
 import FadeInView from "../FadeInView";
-import { Flame, EyeOff, FileX } from "lucide-react";
+import { Flame, EyeOff, FileX, CloudOff } from "lucide-react";
 
 export default function ProblemSection() {
   return (
@@ -13,9 +13,9 @@ export default function ProblemSection() {
         </p>
       </FadeInView>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
         <FadeInView delay={0.2}>
-          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
+          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10 h-full">
             <Flame color="red" size={24} className="mb-4" />
             <h3 className="text-lg font-semibold mb-2">
               Single Point of Failure
@@ -26,8 +26,8 @@ export default function ProblemSection() {
             </p>
           </div>
         </FadeInView>
-        <FadeInView delay={0.4}>
-          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
+        <FadeInView delay={0.3}>
+          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10 h-full">
             <EyeOff color="red" size={24} className="mb-4" />
             <h3 className="text-lg font-semibold mb-2">
               Zero Privacy Protection
@@ -38,8 +38,21 @@ export default function ProblemSection() {
             </p>
           </div>
         </FadeInView>
-        <FadeInView delay={0.6}>
-          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10">
+        <FadeInView delay={0.4}>
+          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10 h-full">
+            <CloudOff color="red" size={24} className="mb-4" />
+            <h3 className="text-lg font-semibold mb-2">
+              Trusting Third Parties
+            </h3>
+            <p className="text-muted">
+              Most tools require accounts, store your data on remote servers, or
+              ask you to trust their infrastructure. One breach and your secrets
+              are exposed.
+            </p>
+          </div>
+        </FadeInView>
+        <FadeInView delay={0.5}>
+          <div className="bg-card/60 shadow-md border border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-300 drop-shadow-2xl hover:shadow-primary/10 h-full">
             <FileX color="red" size={24} className="mb-4" />
             <h3 className="text-lg font-semibold mb-2">
               Unrecoverable for Heirs

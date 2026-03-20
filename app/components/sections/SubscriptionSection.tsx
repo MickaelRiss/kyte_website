@@ -12,6 +12,7 @@ const subscriptions = [
     price: "Free",
     description: "Perfect for individuals securing personal portfolios.",
     features: [
+      "No account required",
       "Standard 2-of-3 Splitting",
       "Local-only Processing",
       "1 seed encryption",
@@ -24,17 +25,17 @@ const subscriptions = [
     name: "Guardian",
     id: "tier-pro",
     href: "https://buy.stripe.com/test_bJe14n7KP8PW8XadO92cg01?locale=en",
-    price: "$9.99",
-    yearlyPrice: "$99.99",
-    yearlyHref:
-      "https://buy.stripe.com/test_dRm3cv8OTaY4ddqeSd2cg02",
+    price: "$4.99",
+    yearlyPrice: "$39.99",
+    yearlyHref: "https://buy.stripe.com/test_dRm3cv8OTaY4ddqeSd2cg02",
     description: "For power users and enterprise security needs.",
     features: [
+      "No account required",
       "10-seed encryption",
       "Everything in Community",
       "Custom M-of-N Configs (up to 10)",
       "AES-256-GCM encryption with passphrase",
-      "Telegram alerts upon decryption with IP location",
+      "Telegram alerts on decryption or attempt with IP location",
     ],
     featured: true,
   },
@@ -79,7 +80,8 @@ export default function SubscriptionPlan() {
           </FadeInView>
           <FadeInView delay={0.2}>
             <p className="text-lg text-gray-400">
-              The ultimate safeguard for your digital legacy.
+              The ultimate safeguard for your digital legacy. No account needed,
+              just download and start protecting your seeds.
             </p>
           </FadeInView>
         </div>
@@ -97,7 +99,9 @@ export default function SubscriptionPlan() {
               <button
                 onClick={() => setYearly(false)}
                 className={`relative z-10 px-5 py-2 text-sm font-medium rounded-full cursor-pointer transition-colors duration-200 ${
-                  !yearly ? "text-primary-foreground" : "text-gray-400 hover:text-white"
+                  !yearly
+                    ? "text-primary-foreground"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
                 Monthly
@@ -105,7 +109,9 @@ export default function SubscriptionPlan() {
               <button
                 onClick={() => setYearly(true)}
                 className={`relative z-10 px-5 py-2 text-sm font-medium rounded-full cursor-pointer transition-colors duration-200 ${
-                  yearly ? "text-primary-foreground" : "text-gray-400 hover:text-white"
+                  yearly
+                    ? "text-primary-foreground"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
                 Yearly

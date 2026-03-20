@@ -91,8 +91,9 @@ export default function SolutionSection() {
               <h3 className="text-lg font-semibold my-2">3. Telegram Alerts</h3>
               <p className="text-sm text-muted leading-relaxed">
                 Get notified instantly via a Telegram bot whenever your seed is
-                decrypted. Each alert includes the IP location so you can detect
-                unauthorized access in real time.
+                decrypted or when someone attempts to decrypt it. Each alert
+                includes the IP location so you can detect unauthorized access
+                in real time.
               </p>
             </div>
           </FadeInView>
@@ -126,9 +127,11 @@ export default function SolutionSection() {
                 Zero-Knowledge Architecture
               </h3>
               <p className="text-sm text-muted leading-relaxed">
-                Everything happens locally on your machine. Kyte never sees your
-                keys, your seed phrase or your fragments. We provide the math,
-                you control the secrets.
+                No account. No server. No data stored. Everything runs locally
+                on your machine. Kyte never sees your keys, your seed phrase, or
+                your fragments. We don&apos;t store anything, not even
+                anonymized metadata. We provide the math, you control the
+                secrets.
               </p>
             </div>
             <Image

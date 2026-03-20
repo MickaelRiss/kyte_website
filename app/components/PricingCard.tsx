@@ -56,7 +56,7 @@ export default function PricingCard({
             /{yearly ? "year" : "mo"}
             {yearly && (
               <span className="ml-2 text-xs text-primary/80 font-medium">
-                Save ~17%
+                Save ~33%
               </span>
             )}
           </span>

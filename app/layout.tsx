@@ -19,8 +19,9 @@ const hubotSans = Hubot_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Kyte",
-  description: "Never Lose Access Again.",
+  title: "Kyte - Secure Your Crypto Wallet | No Account, No Data Stored",
+  description:
+    "Split your seed phrase into secure fragments with Shamir's Secret Sharing. Kyte stores nothing — no accounts, no seeds, no data. Everything runs locally on your device.",
 };
 
 export default function RootLayout({

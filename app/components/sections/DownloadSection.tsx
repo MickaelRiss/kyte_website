@@ -58,8 +58,11 @@ export default function DownloadSection() {
       </div>
       <FadeInView delay={0.1}>
         <h2 className="text-4xl font-bold text-center">
-          Ready to secure your future ?
+          Ready to secure your future?
         </h2>
+        <p className="text-center text-gray-400 mt-4 text-lg">
+          No account. No sign-up. Just download and protect your seeds.
+        </p>
       </FadeInView>
 
       <div className="flex flex-col lg:flex-row items-center justify-center gap-10 md:gap-20 mt-16">

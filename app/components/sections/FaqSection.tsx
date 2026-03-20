@@ -8,6 +8,27 @@ import {
 
 const faqContent = [
   {
+    id: 0,
+    question: "Does Kyte store my data or require an account?",
+    answer: (
+      <div className="space-y-3">
+        <p>
+          <strong>No. Kyte stores absolutely nothing.</strong> There is no
+          account creation, no sign-up, no email required, and no server-side
+          storage of any kind. Your seed phrase, fragments, passphrase, and
+          encryption keys never leave your device.
+        </p>
+        <p>
+          Kyte is built on a <strong>zero-knowledge architecture</strong>: we
+          have no database, no user profiles, and no way to access your
+          secrets — even if we wanted to. You download the app, use it
+          locally, and that&apos;s it. Nothing is transmitted, logged, or
+          retained.
+        </p>
+      </div>
+    ),
+  },
+  {
     id: 1,
     question: "Do I need all three fragments to recover my seed?",
     answer: (
@@ -74,17 +95,19 @@ const faqContent = [
   },
   {
     id: 4,
-    question: "Is my seed phrase ever stored in plaintext anywhere?",
+    question: "Is my seed phrase ever stored anywhere?",
     answer: (
       <div className="space-y-3">
         <p>
-          No. With <strong>Community tier</strong>, your seed is split using
-          Shamir&apos;s Secret Sharing, no plaintext seed is ever stored. Each
-          fragment on its own is meaningless.
+          <strong>Never.</strong> Not on your device, not on our servers, not
+          anywhere. With <strong>Community tier</strong>, your seed is split
+          using Shamir&apos;s Secret Sharing and immediately discarded from
+          memory. Each fragment on its own is mathematically meaningless.
         </p>
         <p>
           With <strong>Guardian tier</strong>, your seed is first encrypted with
-          AES-256-GCM using your passphrase, then split into fragments. When
+          AES-256-GCM using your passphrase, then split into fragments. The
+          original seed and passphrase are never written to disk. When
           recombining, you&apos;ll need both the required fragments and your
           passphrase to recover the original seed.
         </p>
@@ -125,7 +148,8 @@ const faqContent = [
         <p>
           The only feature that uses the internet is{" "}
           <strong>Telegram Recovery Alerts</strong> (Guardian only), which sends
-          a notification when your seed is recovered. Even then, no seed data is
+          a notification when your seed is decrypted or when a decryption
+          attempt is made. Even then, no seed data is
           transmitted, only the recovery event metadata (IP-based location and
           timestamp).
         </p>
@@ -200,7 +224,7 @@ export default function FaqSection() {
           <Accordion
             type="single"
             collapsible
-            defaultValue="Do I need all three fragments to recover my seed?"
+            defaultValue="Does Kyte store my data or require an account?"
             className="max-w-2xl mx-auto mt-10 bg-card/60 border border-border p-8 rounded-xl"
           >
             {faqContent.map((question) => (
