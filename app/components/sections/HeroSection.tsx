@@ -35,7 +35,7 @@ export default function HeroSection() {
 
       <div className="mx-auto max-w-5xl flex flex-col items-center justify-center">
         <FadeInView delay={0.1}>
-          <div className="border rounded-full ring-1 ring-primary/90 border-primary bg-primary/40 px-4 py-1 text-sm whitespace-nowrap text-white inline-flex gap-3 items-center hover:ring-primary transition-all">
+          <div className="border rounded-full ring-1 ring-primary/90 border-primary bg-primary/40 px-4 py-1 text-sm text-white inline-flex gap-3 items-center hover:ring-primary transition-all text-center">
             <ShieldOff size={14} />
             <span>
               Zero-knowledge : we never see your seeds, keys, or fragments

@@ -122,7 +122,7 @@ export default function SubscriptionPlan() {
 
         <div className="mx-auto grid max-w-lg grid-cols-1 gap-8 lg:max-w-4xl lg:grid-cols-2">
           {subscriptions.map((subscription) => (
-            <FadeInView key={subscription.id} delay={0.1}>
+            <FadeInView key={subscription.id} delay={0.1} className="h-full">
               <PricingCard subscription={subscription} yearly={yearly} />
             </FadeInView>
           ))}
