@@ -1,8 +1,8 @@
 {
-  "version": "2.0.2",
+  "version": "2.0.4",
   "assets": {
-    "macos": "https://github.com/MickaelRiss/kyte/releases/download/v2.0.2/kyte-mac-2.0.2.dmg",
-    "windows": "https://github.com/MickaelRiss/kyte/releases/download/v2.0.2/kyte-windows-2.0.2.exe",
-    "linux": "https://github.com/MickaelRiss/kyte/releases/download/v2.0.2/kyte-ubuntu-2.0.2.AppImage"
+    "macos": "https://github.com/MickaelRiss/kyte/releases/download/v2.0.4/kyte-mac-2.0.4.dmg",
+    "windows": "https://github.com/MickaelRiss/kyte/releases/download/v2.0.4/kyte-windows-2.0.4.exe",
+    "linux": "https://github.com/MickaelRiss/kyte/releases/download/v2.0.4/kyte-ubuntu-2.0.4.AppImage"
   }
 }
