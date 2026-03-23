@@ -1,6 +1,7 @@
 name: Update from Main Repo
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types: [new_release]
 
