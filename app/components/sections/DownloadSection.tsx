@@ -1,5 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import FadeInView from "../FadeInView";
 import DownloadButton from "../DownloadButton";
+import InstallModal from "../InstallModal";
 import release from "@/data/release.json";
 
 const downloadOn = [
@@ -27,6 +31,8 @@ const downloadOn = [
 ];
 
 export default function DownloadSection() {
+  const [showInstallModal, setShowInstallModal] = useState(false);
+
   return (
     <section
       className="mt-30 md:mt-40 max-w-5xl mx-auto lg:px-0 pt-10 px-6"
@@ -75,10 +81,28 @@ export default function DownloadSection() {
         ))}
       </div>
       <FadeInView delay={0.2}>
-        <p className="text-muted text-sm text-center mt-12">
-          Current Version: {release.version}
-        </p>
+        <div className="text-center mt-12">
+          <p className="text-muted text-sm">
+            Current Version: {release.version}
+          </p>
+          <p className="text-xs text-muted mt-3 max-w-xl mx-auto">
+            Kyte is not yet registered with Apple or Microsoft as a signed
+            application. Your system may display a security warning during
+            installation, this is expected and does not indicate any risk.{" "}
+            <button
+              onClick={() => setShowInstallModal(true)}
+              className="text-primary underline hover:text-primary/80 transition-colors cursor-pointer"
+            >
+              How to install?
+            </button>
+          </p>
+        </div>
       </FadeInView>
+
+      <InstallModal
+        open={showInstallModal}
+        onOpenChange={setShowInstallModal}
+      />
     </section>
   );
 }
